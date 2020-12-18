@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "268625186758",
+    "firebase_url": "https://test-a9716.firebaseio.com",
+    "project_id": "test-a9716",
+    "storage_bucket": "test-a9716.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268625186758:android:c199d95135b682fd6c2cc7",
+        "android_client_info": {
+          "package_name": "com.example.testcloudauth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "268625186758-mhq0uspm2ch1ra948k9nh0rsamgkvudn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAexXcEON2MW2porTkdCzLHKRuM3sqsT30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "268625186758-mhq0uspm2ch1ra948k9nh0rsamgkvudn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
