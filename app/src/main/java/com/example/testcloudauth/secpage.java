@@ -42,7 +42,7 @@ import java.util.List;
 public class secpage extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "SecPageActivity";
     private Button btnSignOut;
 
     private EditText etName;
@@ -52,10 +52,7 @@ public class secpage extends AppCompatActivity {
     private ImageView profileImage;
     private StorageReference storageReference;
 
-
-
     DatabaseReference userDBRef;
-
 
     private TextView tvshow, tvuserid;
     private FirebaseUser user;
@@ -85,8 +82,6 @@ public class secpage extends AppCompatActivity {
 
             }
         });
-
-
 
         mAuth = FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();//get user
@@ -123,48 +118,45 @@ public class secpage extends AppCompatActivity {
                 finish();
             }
         });
-
-
-
     }
-//new now pic
+
+    //new now pic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode==PICK_IMAGE_REQUEST && resultCode==RESULT_OK && data!=null){
             imageuri = data.getData();
             imagename=getFileName(imageuri);
             profileImage.setImageURI(imageuri);
-
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
 
-
-
     private void insertUserData() {
-        final String name=etName.getText().toString();
-        final String position=spinnerPosition.getSelectedItem().toString();
-        final String email=tvshow.getText().toString();
+        final String name = etName.getText().toString();
+        final String position = spinnerPosition.getSelectedItem().toString();
+        final String email = tvshow.getText().toString();
         //pic
         StorageReference abc = storageReference.child("images/img1.jpg");
 
-        abc.putFile(imageuri)
-                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            //Toast.makeText(secpage.this, "Image uploaded", Toast.LENGTH_SHORT).show();
-                            //new now
-                            final StorageReference ref = storageReference.child("images").child("users").child(imagename);
-                            ref.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
+        if (name.isEmpty() || imageuri == null || imageuri.equals(Uri.EMPTY)) {
+            Toast.makeText(secpage.this, "Image or name is empty", Toast.LENGTH_SHORT).show();
+        } else {
+            abc.putFile(imageuri)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                //Toast.makeText(secpage.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+                                //new now
+                                final StorageReference ref = storageReference.child("images").child("users").child(imagename);
+                                ref.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
                                                 imageurl = uri.toString();
 
                                                 if (!name.equals("") && !position.equals("")) {
@@ -177,27 +169,26 @@ public class secpage extends AppCompatActivity {
                                                 } else {
                                                     Toast.makeText(secpage.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
                                                 }
-
-
+                                                }
+                                            });
+                                        } else {
+                                            Toast.makeText(secpage.this, "Not uploaded", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception exception) {
+                                                Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
-                                    } else {
-                                        Toast.makeText(secpage.this, "Not uploaded", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                            //end pic
+                                //end pic
 
 
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
 
@@ -209,21 +200,18 @@ public class secpage extends AppCompatActivity {
                 if (cursor != null && cursor.moveToFirst()){
                     result=cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
-            }finally {
+            } finally {
                 cursor.close();
             }
         }
+
         if (result == null){
             result=uri.getPath();
             int cut=result.lastIndexOf('/');
             if (cut != -1){
                 result=result.substring(cut+1);
-                }
             }
-        return result;
         }
-
-
-
-
+        return result;
+    }
 }

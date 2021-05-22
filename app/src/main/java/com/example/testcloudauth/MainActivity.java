@@ -68,81 +68,85 @@ public class MainActivity extends AppCompatActivity {
                 final String email = mEmail.getText().toString();
                 String pass = mPassword.getText().toString();
 
-                mAuth.signInWithEmailAndPassword(email,pass)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()){
-                                    //check if email exists in database
-                                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                                    Query query=rootRef.child("Users").orderByChild("email").equalTo(email);
-                                    query.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (!snapshot.exists()){
-                                                //Toast.makeText(MainActivity.this, "no in db", Toast.LENGTH_SHORT).show();
-                                                Intent i=new Intent(getApplicationContext(),secpage.class);
-                                                startActivity(i);
-                                                Toast.makeText(MainActivity.this, "Login successful, but please fill all fields", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else{
-                                                Intent i=new Intent(getApplicationContext(),ProfileActivity.class);
-                                                startActivity(i);
-                                                Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {}
-                                    });
-
-
-                                    ///
-                                    /*Intent i=new Intent(getApplicationContext(),secpage.class);
-                                    startActivity(i);
-                                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();*/
-                                }
-                                else {
-                                    Toast.makeText(MainActivity.this, "Wrong login", Toast.LENGTH_SHORT).show();
-                                    //alert
-                                    builder.setMessage("Don't have account yet. Would you like register ?")
-                                            .setCancelable(false)
-                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    //finish();
-                                                    startActivity(new Intent(MainActivity.this, regpage.class));
-                                                    Toast.makeText(getApplicationContext(),"you choose yes action for alertbox",
-                                                            Toast.LENGTH_SHORT).show();
+                if (email.isEmpty() || pass.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.signInWithEmailAndPassword(email,pass)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()){
+                                        //check if email exists in database
+                                        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+                                        Query query=rootRef.child("Users").orderByChild("email").equalTo(email);
+                                        query.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (!snapshot.exists()){
+                                                    //Toast.makeText(MainActivity.this, "no in db", Toast.LENGTH_SHORT).show();
+                                                    Intent i=new Intent(getApplicationContext(),secpage.class);
+                                                    startActivity(i);
+                                                    Toast.makeText(MainActivity.this, "Login successful, but please fill all fields", Toast.LENGTH_SHORT).show();
                                                 }
-                                            })
-                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    //  Action for 'NO' Button
-                                                    dialog.cancel();
-                                                    Toast.makeText(getApplicationContext(),"you choose no action for alertbox",
-                                                            Toast.LENGTH_SHORT).show();
+                                                else{
+                                                    Intent i=new Intent(getApplicationContext(),ProfileActivity.class);
+                                                    startActivity(i);
+                                                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+
                                                 }
-                                            });
-                                    //Creating dialog box
-                                    AlertDialog alert = builder.create();
-                                    //Setting the title manually
-                                    alert.setTitle("Notice");
-                                    alert.show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {}
+                                        });
+
+
+                                        ///
+                                        /*Intent i=new Intent(getApplicationContext(),secpage.class);
+                                        startActivity(i);
+                                        Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();*/
+                                    }
+                                    else {
+                                        Toast.makeText(MainActivity.this, "Wrong login", Toast.LENGTH_SHORT).show();
+                                        //alert
+                                        builder.setMessage("Don't have account yet. Would you like register ?")
+                                                .setCancelable(false)
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        //finish();
+                                                        startActivity(new Intent(MainActivity.this, regpage.class));
+                                                        Toast.makeText(getApplicationContext(),"you choose yes action for alertbox",
+                                                                Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        //  Action for 'NO' Button
+                                                        dialog.cancel();
+                                                        Toast.makeText(getApplicationContext(),"you choose no action for alertbox",
+                                                                Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                        //Creating dialog box
+                                        AlertDialog alert = builder.create();
+                                        //Setting the title manually
+                                        alert.setTitle("Notice");
+                                        alert.show();
 
 
 
-                                    //end alert
+                                        //end alert
+                                    }
                                 }
-                            }
-                        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
 

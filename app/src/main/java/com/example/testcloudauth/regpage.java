@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class regpage extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "RegPageActivity";
     private FirebaseAuth mAuth;
 
 
@@ -42,14 +42,15 @@ public class regpage extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                createNew(username.getText().toString(), password.getText().toString());
+                if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+                    Toast.makeText(regpage.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    createNew(username.getText().toString(), password.getText().toString());
+                }
             }
         });
-
-
-
     }
+
     private void createNew(String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -69,12 +70,8 @@ public class regpage extends AppCompatActivity {
                             Toast.makeText(regpage.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-
                         // ...
                     }
                 });
     }
-
-
-
 }
