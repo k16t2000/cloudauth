@@ -14,6 +14,19 @@
     <string name="btnclose">Close</string>
     <string name="Enter_profile">Enter al fields</string>
     <string name="Calendar">Calendar</string>
+    <string name="comment">Comment</string>
+    <string name="default_time">00:00</string>
+    <string name="save">Save</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="currentdate">CurrentDate</string>
+    <string name="zero">0</string>
+    <string name="working_hours">Working hours:</string>
     <array name="position">
         <item>Administrative</item>
         <item>Worker</item>
