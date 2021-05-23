@@ -49,21 +49,24 @@ public class ProfileActivity extends AppCompatActivity {
         myRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                // User is signed in
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                toastMessage("Successfully signed in with: " + user.getEmail());
-            } else {
-                // User is signed out
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-                toastMessage("Successfully signed out.");
-            }
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    toastMessage("Successfully signed in with: " + user.getEmail());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    toastMessage("Successfully signed out.");
+                }
             }
         };
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -78,17 +81,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        //tvshow=(TextView)findViewById(R.id.tvshowemail);
-        //tvuserid=(TextView)findViewById(R.id.tvuserid);
-        //tvshow.setText(user.getEmail());
-
-        //tvuserid.setText(user.getUid());
-        //btn calendar
         btncalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(getApplicationContext(),CalendarActivity.class);
-                startActivity(i);
+                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
                 Toast.makeText(ProfileActivity.this, "Calendar view", Toast.LENGTH_SHORT).show();
             }
         });
@@ -104,7 +100,6 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     private void showData(DataSnapshot dataSnapshot) {
@@ -113,6 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
             uInfo.setName(ds.child(userID).getValue(Users.class).getName());
             uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
             uInfo.setPosition(ds.child(userID).getValue(Users.class).getPosition());
+
             //display all the information
             Log.d(TAG, "showData: name: " + uInfo.getName());
             Log.d(TAG, "showData: email: " + uInfo.getEmail());
