@@ -83,10 +83,9 @@ public class MainActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (!snapshot.exists()){
                                     Toast.makeText(MainActivity.this, "Login successful, please fill all fields", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, secpage.class));
+                                    startActivity(new Intent(getApplicationContext(), secpage.class));
                                 } else {
-                                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                                 }
                             }
 
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    startActivity(new Intent(MainActivity.this, regpage.class));
+                                    startActivity(new Intent(getApplicationContext(), regpage.class));
                                     Toast.makeText(getApplicationContext(),"You chose \"yes\", yay! :D", Toast.LENGTH_SHORT).show();
                                 }
                             })
