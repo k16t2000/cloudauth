@@ -58,95 +58,72 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userDBRef= FirebaseDatabase.getInstance().getReference().child("Users");
-        user=mAuth.getCurrentUser();//get user
+        user = mAuth.getCurrentUser();//get user
         /*if (user != null){
             startActivity(new Intent(getApplicationContext(), secpage.class));
         }*/
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String email = mEmail.getText().toString();
-                String pass = mPassword.getText().toString();
+            final String email = mEmail.getText().toString();
+            String pass = mPassword.getText().toString();
 
-                if (email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    mAuth.signInWithEmailAndPassword(email,pass)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()){
-                                        //check if email exists in database
-                                        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                                        Query query=rootRef.child("Users").orderByChild("email").equalTo(email);
-                                        query.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                if (!snapshot.exists()){
-                                                    //Toast.makeText(MainActivity.this, "no in db", Toast.LENGTH_SHORT).show();
-                                                    Intent i=new Intent(getApplicationContext(),secpage.class);
-                                                    startActivity(i);
-                                                    Toast.makeText(MainActivity.this, "Login successful, but please fill all fields", Toast.LENGTH_SHORT).show();
-                                                }
-                                                else{
-                                                    Intent i=new Intent(getApplicationContext(),ProfileActivity.class);
-                                                    startActivity(i);
-                                                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+            if (email.isEmpty() || pass.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+            } else {
+                mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+                        // Check if email exists in database
+                        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+                        Query query = rootRef.child("Users").orderByChild("email").equalTo(email);
+                        query.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()){
+                                    Toast.makeText(MainActivity.this, "Login successful, please fill all fields", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(MainActivity.this, secpage.class));
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                                }
+                            }
 
-                                                }
-                                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {}
-                                        });
-
-
-                                        ///
-                                        /*Intent i=new Intent(getApplicationContext(),secpage.class);
-                                        startActivity(i);
-                                        Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();*/
-                                    }
-                                    else {
-                                        Toast.makeText(MainActivity.this, "Wrong login", Toast.LENGTH_SHORT).show();
-                                        //alert
-                                        builder.setMessage("Don't have account yet. Would you like register ?")
-                                                .setCancelable(false)
-                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        //finish();
-                                                        startActivity(new Intent(MainActivity.this, regpage.class));
-                                                        Toast.makeText(getApplicationContext(),"you choose yes action for alertbox",
-                                                                Toast.LENGTH_SHORT).show();
-                                                    }
-                                                })
-                                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        //  Action for 'NO' Button
-                                                        dialog.cancel();
-                                                        Toast.makeText(getApplicationContext(),"you choose no action for alertbox",
-                                                                Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                        //Creating dialog box
-                                        AlertDialog alert = builder.create();
-                                        //Setting the title manually
-                                        alert.setTitle("Notice");
-                                        alert.show();
-
-
-
-                                        //end alert
-                                    }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(MainActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                        // New user creating alert window
+                        builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    startActivity(new Intent(MainActivity.this, regpage.class));
+                                    Toast.makeText(getApplicationContext(),"You chose \"yes\", yay! :D", Toast.LENGTH_SHORT).show();
                                 }
                             })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    Toast.makeText(getApplicationContext(),"You chose \"no\" :(", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
+                            AlertDialog alert = builder.create();
+                            alert.setTitle("Attention!");
+                            alert.show();
                         }
-                    });
-                }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             }
         });
 
@@ -154,12 +131,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String email = mEmail.getText().toString();
-                if(TextUtils.isEmpty(email)) {
+                if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Field needs to be filled!");
-                }else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     mEmail.setError("You need to enter a valid email.");
                     isEmailValid = false;
-                }else{
+                } else {
                     isEmailValid = true;
                     mAuth.useAppLanguage();
                     mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -168,26 +145,14 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Log.w(TAG, "Email successfully sent.");
                                 Snackbar.make(linearLayout, "Email was sent to the address you provided.", Snackbar.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 Log.w(TAG, "Error occurred when sending email", task.getException());
                                 Snackbar.make(linearLayout, "Error sending email", Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
-
             }
-
         });
-        //end
-
-
-
-
-
     }
-
-
-
-
 }

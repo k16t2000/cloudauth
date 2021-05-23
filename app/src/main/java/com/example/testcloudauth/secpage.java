@@ -40,22 +40,18 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class secpage extends AppCompatActivity {
+    private FirebaseUser user;
     private FirebaseAuth mAuth;
 
     private static final String TAG = "SecPageActivity";
-    private Button btnSignOut;
-
+    private Button btnSignOut, btnInsertData;
+    private TextView tvshow, tvuserid;
     private EditText etName;
     private Spinner spinnerPosition;
-    private Button btnInsertData;
-
     private ImageView profileImage;
     private StorageReference storageReference;
 
     DatabaseReference userDBRef;
-
-    private TextView tvshow, tvuserid;
-    private FirebaseUser user;
 
     private static final int PICK_IMAGE_REQUEST=8;
     private Uri imageuri;
@@ -66,11 +62,11 @@ public class secpage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secpage);
 
-        etName=(EditText) findViewById(R.id.edName);
-        spinnerPosition=(Spinner) findViewById(R.id.spinnerPosition);
-        btnInsertData=(Button) findViewById(R.id.btnInsertData);
+        etName = (EditText) findViewById(R.id.edName);
+        spinnerPosition = (Spinner) findViewById(R.id.spinnerPosition);
+        btnInsertData = (Button) findViewById(R.id.btnInsertData);
 
-        profileImage=(ImageView) findViewById(R.id.imageUser);
+        profileImage = (ImageView) findViewById(R.id.imageUser);
         //loadPicture=(Button) findViewById(R.id.btn_load_pic);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,26 +75,22 @@ public class secpage extends AppCompatActivity {
                 i.setType("image/*"); //"video/*"   //"file/*"
                 i.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(i, PICK_IMAGE_REQUEST);
-
             }
         });
 
         mAuth = FirebaseAuth.getInstance();
-        user=mAuth.getCurrentUser();//get user
+        user = mAuth.getCurrentUser();//get user
 
-        tvshow=(TextView)findViewById(R.id.tvshowemail);
-        tvuserid=(TextView)findViewById(R.id.tvuserid);
+        tvshow = (TextView)findViewById(R.id.tvshowemail);
+        tvuserid = (TextView)findViewById(R.id.tvuserid);
         tvshow.setText(user.getEmail());
         tvuserid.setText(user.getUid());
 
-
         btnSignOut = (Button) findViewById(R.id.email_sign_out_btn);
 
+        userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        userDBRef= FirebaseDatabase.getInstance().getReference().child("Users");
-
-        storageReference= FirebaseStorage.getInstance().getReference();//for pics
-
+        storageReference = FirebaseStorage.getInstance().getReference();//for pics
 
         btnInsertData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,9 +115,9 @@ public class secpage extends AppCompatActivity {
     //new now pic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode==PICK_IMAGE_REQUEST && resultCode==RESULT_OK && data!=null){
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data!= null){
             imageuri = data.getData();
-            imagename=getFileName(imageuri);
+            imagename = getFileName(imageuri);
             profileImage.setImageURI(imageuri);
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -175,22 +167,16 @@ public class secpage extends AppCompatActivity {
                                             Toast.makeText(secpage.this, "Not uploaded", Toast.LENGTH_SHORT).show();
                                         }
                                     }
-                                })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception exception) {
-                                                Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                }).addOnFailureListener(new OnFailureListener() {public void onFailure(@NonNull Exception exception) {
+                                        Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                                 //end pic
-
-
                             }
                         }
                     });
         }
     }
-
 
     public String getFileName(Uri uri){
         String result=null;

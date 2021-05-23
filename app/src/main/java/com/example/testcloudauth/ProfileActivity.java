@@ -32,16 +32,18 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
-    private  String userID;
+    private String userID;
 
     private ListView mListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile2);
-        Button btnSignOut = (Button) findViewById(R.id.email_sign_out_btn);
-        Button btncalendar=(Button)findViewById(R.id.calendar);
-        mListView = (ListView) findViewById(R.id.listview);
+
+        Button btnSignOut = (Button)findViewById(R.id.email_sign_out_btn);
+        Button btncalendar = (Button)findViewById(R.id.calendar);
+        mListView = (ListView)findViewById(R.id.listview);
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
@@ -50,17 +52,16 @@ public class ProfileActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    toastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    toastMessage("Successfully signed out.");
-                }
-                // ...
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                toastMessage("Successfully signed in with: " + user.getEmail());
+            } else {
+                // User is signed out
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                toastMessage("Successfully signed out.");
+            }
             }
         };
         myRef.addValueEventListener(new ValueEventListener() {
@@ -76,8 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-
-
 
         //tvshow=(TextView)findViewById(R.id.tvshowemail);
         //tvuserid=(TextView)findViewById(R.id.tvuserid);
@@ -109,7 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        for(DataSnapshot ds : dataSnapshot.getChildren()){
+        for (DataSnapshot ds : dataSnapshot.getChildren()){
             Users uInfo=new Users();
             uInfo.setName(ds.child(userID).getValue(Users.class).getName());
             uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
@@ -123,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
             array.add(uInfo.getName());
             array.add(uInfo.getEmail());
             array.add(uInfo.getPosition());
-            ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,array);
+            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
             mListView.setAdapter(adapter);
         }
     }
@@ -142,12 +141,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * customizable toast
      * @param message
      */
     private void toastMessage(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
     }
 }
