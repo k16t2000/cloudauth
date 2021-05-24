@@ -58,18 +58,12 @@ public class CalendarAdapter extends ArrayAdapter {
     }
 
     @Override
-    public int getCount() {
-        return dates.size();
-    }
+    public int getCount() { return dates.size(); }
 
     @Override
-    public int getPosition(@Nullable Object item) {
-        return dates.indexOf(item);
-    }
+    public int getPosition(@Nullable Object item) { return dates.indexOf(item); }
 
     @Nullable
     @Override
-    public Object getItem(int position) {
-        return dates.get(position);
-    }
+    public Object getItem(int position) { return dates.get(position); }
 }

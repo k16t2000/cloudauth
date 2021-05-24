@@ -27,6 +27,7 @@
     <string name="currentdate">CurrentDate</string>
     <string name="zero">0</string>
     <string name="working_hours">Working hours:</string>
+    <string name="imageDesc">User profile picture</string>
     <array name="position">
         <item>Administrative</item>
         <item>Worker</item>

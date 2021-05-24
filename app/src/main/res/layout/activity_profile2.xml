@@ -8,6 +8,16 @@
     android:orientation="vertical"
     android:layout_margin="20dp"
     tools:context=".ProfileActivity">
+
+    <ImageView
+        android:id="@+id/userImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="@string/imageDesc"
+        android:scaleType="center"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <Button
         android:id="@+id/email_sign_out_btn"
         android:layout_width="match_parent"
@@ -28,69 +38,5 @@
         android:id="@+id/listview">
 
     </ListView>
-
-    <!--<TextView
-        android:id="@+id/profile_page"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
-        android:text="@string/profile"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-
-    <TextView
-        android:id="@+id/meil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginTop="10dp"
-        android:text="mail" />
-    <ImageView
-        android:id="@+id/imageUser"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:contentDescription="@string/pictureuser"
-        android:src="@drawable/ic_baseline_person_pin_24" />
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginTop="20dp"
-        android:text="name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-    <TextView
-        android:id="@+id/position"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginTop="10dp"
-        android:text="position" />
-
-
-
-
-
-
-
-    <TextView
-        android:id="@+id/tvshowemail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:gravity="center_horizontal"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:text="Welcome" />
-
-    <TextView
-        android:id="@+id/tvuserid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="15sp"
-        tools:text="ID here..." />-->
 
 </LinearLayout>

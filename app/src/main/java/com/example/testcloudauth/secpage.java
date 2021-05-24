@@ -123,7 +123,6 @@ public class secpage extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     private void insertUserData() {
         final String name = etName.getText().toString();
         final String position = spinnerPosition.getSelectedItem().toString();
@@ -134,57 +133,56 @@ public class secpage extends AppCompatActivity {
         if (name.isEmpty() || imageuri == null || imageuri.equals(Uri.EMPTY)) {
             Toast.makeText(secpage.this, "Image or name is empty", Toast.LENGTH_SHORT).show();
         } else {
-            abc.putFile(imageuri)
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                //Toast.makeText(secpage.this, "Image uploaded", Toast.LENGTH_SHORT).show();
-                                //new now
-                                final StorageReference ref = storageReference.child("images").child("users").child(imagename);
-                                ref.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                imageurl = uri.toString();
+            abc.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        //Toast.makeText(secpage.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+                        //new now
+                        final StorageReference ref = storageReference.child("images").child("users").child(imagename);
+                        ref.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            imageurl = uri.toString();
 
-                                                if (!name.equals("") && !position.equals("")) {
-                                                    Users users = new Users(name, position, email, imageurl);
-                                                    //userDBRef.push().setValue(users);
-                                                    userDBRef.child(mAuth.getCurrentUser().getUid()).setValue(users);
-                                                    Toast.makeText(secpage.this, "Data inserted!", Toast.LENGTH_SHORT).show();
-                                                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                                                    finish();
-                                                } else {
-                                                    Toast.makeText(secpage.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
-                                                }
-                                                }
-                                            });
-                                        } else {
-                                            Toast.makeText(secpage.this, "Not uploaded", Toast.LENGTH_SHORT).show();
+                                            if (!name.equals("") && !position.equals("")) {
+                                                Users users = new Users(name, position, email, imageurl);
+                                                //userDBRef.push().setValue(users);
+                                                userDBRef.child(mAuth.getCurrentUser().getUid()).setValue(users);
+                                                Toast.makeText(secpage.this, "Data inserted!", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                                finish();
+                                            } else {
+                                                Toast.makeText(secpage.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {public void onFailure(@NonNull Exception exception) {
-                                        Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                //end pic
+                                    });
+                                } else {
+                                    Toast.makeText(secpage.this, "Not uploaded", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        }).addOnFailureListener(new OnFailureListener() {
+                            public void onFailure(@NonNull Exception exception) {
+                                Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 
     public String getFileName(Uri uri){
-        String result=null;
+        String result = null;
         if (uri.getScheme().equals("content")){
             Cursor cursor=getContentResolver().query(uri,null,null,null,null);
             try {
                 if (cursor != null && cursor.moveToFirst()){
-                    result=cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
             } finally {
                 cursor.close();
@@ -192,10 +190,10 @@ public class secpage extends AppCompatActivity {
         }
 
         if (result == null){
-            result=uri.getPath();
-            int cut=result.lastIndexOf('/');
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
             if (cut != -1){
-                result=result.substring(cut+1);
+                result = result.substring(cut+1);
             }
         }
         return result;

@@ -54,75 +54,73 @@ public class MainActivity extends AppCompatActivity {
         btnSignIn = (Button) findViewById(R.id.emial_sign_in_btn);
         btnForgot = (Button) findViewById(R.id.forgot_btn);
 
-        builder= new AlertDialog.Builder(this);//for alert
+        builder = new AlertDialog.Builder(this);//for alert
 
         mAuth = FirebaseAuth.getInstance();
-        userDBRef= FirebaseDatabase.getInstance().getReference().child("Users");
+        userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
         user = mAuth.getCurrentUser();//get user
-        /*if (user != null){
-            startActivity(new Intent(getApplicationContext(), secpage.class));
-        }*/
+
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            final String email = mEmail.getText().toString();
-            String pass = mPassword.getText().toString();
+                final String email = mEmail.getText().toString();
+                String pass = mPassword.getText().toString();
 
-            if (email.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
-            } else {
-                mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-                        // Check if email exists in database
-                        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                        Query query = rootRef.child("Users").orderByChild("email").equalTo(email);
-                        query.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (!snapshot.exists()){
-                                    Toast.makeText(MainActivity.this, "Login successful, please fill all fields", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(getApplicationContext(), secpage.class));
-                                } else {
-                                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                if (email.isEmpty() || pass.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            // Check if email exists in database
+                            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+                            Query query = rootRef.child("Users").orderByChild("email").equalTo(email);
+                            query.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (!snapshot.exists()){
+                                        Toast.makeText(MainActivity.this, "Login successful, please fill all fields", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getApplicationContext(), secpage.class));
+                                    } else {
+                                        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                    } else {
-                        Toast.makeText(MainActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
-                        // New user creating alert window
-                        builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    startActivity(new Intent(getApplicationContext(), regpage.class));
-                                    Toast.makeText(getApplicationContext(),"You chose \"yes\", yay! :D", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    Toast.makeText(getApplicationContext(),"You chose \"no\" :(", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                        } else {
+                            Toast.makeText(MainActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                            // New user creating alert window
+                            builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        startActivity(new Intent(getApplicationContext(), regpage.class));
+                                        Toast.makeText(getApplicationContext(),"You chose \"yes\", yay! :D", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        Toast.makeText(getApplicationContext(),"You chose \"no\" :(", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
-                            AlertDialog alert = builder.create();
-                            alert.setTitle("Attention!");
-                            alert.show();
+                                AlertDialog alert = builder.create();
+                                alert.setTitle("Attention!");
+                                alert.show();
+                            }
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
