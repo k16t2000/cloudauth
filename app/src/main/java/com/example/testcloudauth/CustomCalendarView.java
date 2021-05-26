@@ -3,10 +3,7 @@ package com.example.testcloudauth;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +17,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,12 +29,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class CustomCalendarView extends LinearLayout {
-    ImageButton NextButton,PreviousButton, ibSetWorkHors;
-    Button btnSaveWorkHours;
-    TextView CurrentDate, tvWorkHours;
-    GridView gridView;
-    String userId;
-    SharedPreferences preferences;
+    private ImageButton NextButton,PreviousButton, ibSetWorkHors;
+    private Button btnSaveWorkHours;
+    private TextView CurrentDate, tvWorkHours;
+    private GridView gridView;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private String userId;
 
 
     private static final int MAX_CALENDAR_DAYS = 42;
@@ -141,8 +142,9 @@ public class CustomCalendarView extends LinearLayout {
         PreviousButton = view.findViewById(R.id.previousBtn);
         CurrentDate = view.findViewById(R.id.current_Date);
         gridView = view.findViewById(R.id.gridView);
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        userId = preferences.getString(getResources().getString(R.string.currentuserid), "");
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        userId = user != null ? user.getUid() : null;
     }
 
     private void SetUpCalendar() {
@@ -167,6 +169,8 @@ public class CustomCalendarView extends LinearLayout {
     }
 
     private void SaveWorkHours(String userId, String workDate, String workDuration) {
+
+
         Toast.makeText(context, getResources().getString(R.string.work_hours_saved), Toast.LENGTH_SHORT).show();
     }
 }

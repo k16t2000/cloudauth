@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,7 +36,6 @@ public class ProfileActivity extends AppCompatActivity {
     private String userID;
     private ImageView userPic;
     private ListView mListView;
-    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +51,6 @@ public class ProfileActivity extends AppCompatActivity {
         myRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -88,10 +84,6 @@ public class ProfileActivity extends AppCompatActivity {
         btncalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(getResources().getString(R.string.currentuserid), userID);
-                editor.apply();
-
                 startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
             }
         });
