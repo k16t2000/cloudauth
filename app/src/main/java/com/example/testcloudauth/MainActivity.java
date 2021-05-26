@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mPassword = (EditText) findViewById(R.id.password);
         btnSignIn = (Button) findViewById(R.id.emial_sign_in_btn);
         btnForgot = (Button) findViewById(R.id.forgot_btn);
+        linearLayout = (LinearLayout) findViewById(R.id.main);
 
         builder = new AlertDialog.Builder(this);//for alert
 
