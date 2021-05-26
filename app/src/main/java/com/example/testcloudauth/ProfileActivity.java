@@ -109,7 +109,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        Boolean bool = false;
+        boolean bool = false;
         for (DataSnapshot ds : dataSnapshot.getChildren()){
             final Users uInfo=new Users();
             uInfo.setName(ds.child(userID).getValue(Users.class).getName());

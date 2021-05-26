@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private EditText mEmail, mPassword;
     private Button btnSignIn,btnForgot;
-    private FirebaseUser user;
 
     DatabaseReference userDBRef;
 
@@ -59,16 +58,16 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        user = mAuth.getCurrentUser();//get user
+        //FirebaseUser user = mAuth.getCurrentUser();//get user
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String email = mEmail.getText().toString();
-                String pass = mPassword.getText().toString();
+                final String pass = mPassword.getText().toString();
 
                 if (email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Login or password is empty!", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -81,13 +80,12 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()){
-                                        Toast.makeText(MainActivity.this, "Login successful, please fill all fields", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Login successful, please fill all fields!", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(getApplicationContext(), secpage.class));
                                     } else {
                                         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                                     }
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Field needs to be filled!");
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    mEmail.setError("You need to enter a valid email.");
+                    mEmail.setError("You need to enter a valid email!");
                     isEmailValid = false;
                 } else {
                     isEmailValid = true;
@@ -144,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
                                 Log.w(TAG, "Email successfully sent.");
                                 Snackbar.make(linearLayout, "Email was sent to the address you provided.", Snackbar.LENGTH_SHORT).show();
                             } else {
-                                Log.w(TAG, "Error occurred when sending email", task.getException());
-                                Snackbar.make(linearLayout, "Error sending email", Snackbar.LENGTH_SHORT).show();
+                                Log.w(TAG, "Error occurred when sending email...", task.getException());
+                                Snackbar.make(linearLayout, "Error sending email...", Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });
