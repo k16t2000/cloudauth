@@ -1,13 +1,19 @@
 package com.example.testcloudauth;
 
+import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -17,17 +23,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class CustomCalendarView extends LinearLayout {
-    ImageButton NextButton,PreviousButton;
-    TextView CurrentDate;
+    ImageButton NextButton,PreviousButton, ibSetWorkHors;
+    Button btnSaveWorkHours;
+    TextView CurrentDate, tvWorkHours;
     GridView gridView;
+
+
     private static final int MAX_CALENDAR_DAYS = 42;
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     Context context;
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy",Locale.ENGLISH);
 
     CalendarAdapter calendarAdapter;
+    AlertDialog alertDialogAddWorkTime;
     List<Date> dates = new ArrayList<>();
     List<Events> eventsList = new ArrayList<>();
 
@@ -53,6 +64,54 @@ public class CustomCalendarView extends LinearLayout {
                 SetUpCalendar();
             }
         });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+                final View addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_new_work_time_layout, null, false);
+                tvWorkHours = addView.findViewById(R.id.tv_work_hours);
+                ibSetWorkHors = addView.findViewById(R.id.ib_set_work_time);
+                btnSaveWorkHours = addView.findViewById(R.id.btn_save_work_hours);
+
+                ibSetWorkHors.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Calendar calendar = Calendar.getInstance();
+                        int defaultHours = calendar.get(Calendar.HOUR_OF_DAY);
+                        int defaultMinutes = 0;
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(addView.getContext(), R.style.Theme_AppCompat_Dialog,
+                                new TimePickerDialog.OnTimeSetListener() {
+                                    @Override
+                                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                        Calendar c = Calendar.getInstance();
+                                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                        c.set(Calendar.MINUTE, minute);
+                                        c.setTimeZone(TimeZone.getDefault());
+                                        SimpleDateFormat hformate = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+                                        String workDuration  = hformate.format(c.getTime());
+                                        tvWorkHours.setText(workDuration);
+                                    }
+                                }, defaultHours, defaultMinutes, true);
+                        timePickerDialog.show();
+                    }
+                });
+
+                btnSaveWorkHours.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SaveWorkHours();
+                        SetUpCalendar();
+                        alertDialogAddWorkTime.dismiss();
+                    }
+                });
+
+                builder.setView(addView);
+                alertDialogAddWorkTime = builder.create();
+                alertDialogAddWorkTime.show();
+            }
+        });
     }
 
     public CustomCalendarView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -68,7 +127,7 @@ public class CustomCalendarView extends LinearLayout {
         gridView = view.findViewById(R.id.gridView);
     }
 
-    private void SetUpCalendar(){
+    private void SetUpCalendar() {
         String currentDate = dateFormat.format(calendar.getTime());
         CurrentDate.setText(currentDate);
         dates.clear();
@@ -87,5 +146,9 @@ public class CustomCalendarView extends LinearLayout {
 
         calendarAdapter = new CalendarAdapter(context, dates, calendar, eventsList);
         gridView.setAdapter(calendarAdapter);
+    }
+
+    private void SaveWorkHours() {
+        Toast.makeText(context, "Work hours saved", Toast.LENGTH_SHORT).show();
     }
 }
