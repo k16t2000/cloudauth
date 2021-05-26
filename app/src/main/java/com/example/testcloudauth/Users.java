@@ -1,19 +1,9 @@
 package com.example.testcloudauth;
 
 public class Users {
-    private String name;
-    private String position;
-    private String email;
-    private String imageurl;
+    private String name, position, email, imageurl;
 
-    //for calendar
-    private String EVENT = "event";
-    private String TIME = "time";
-    private String DATE = "date";
-    private String MONTH = "month";
-    private String YEAR = "year";
-
-    public Users(){ }
+    public Users() {}
 
     public Users(String name, String position, String email, String imageurl) {
         this.name = name;
