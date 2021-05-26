@@ -17,14 +17,14 @@ import java.util.List;
 public class CalendarAdapter extends ArrayAdapter {
     List<Date> dates;
     Calendar currentDate;
-    List<Events> events;
+    List<WorkingHoursList> workingHoursLists;
     LayoutInflater inflater;
 
-    public CalendarAdapter(@NonNull Context context, List<Date> dates, Calendar currentDate, List<Events> events) {
+    public CalendarAdapter(@NonNull Context context, List<Date> dates, Calendar currentDate, List<WorkingHoursList> workingHoursLists) {
         super(context, R.layout.single_cell_layout);
         this.dates = dates;
         this.currentDate = currentDate;
-        this.events = events;
+        this.workingHoursLists = workingHoursLists;
         inflater = LayoutInflater.from(context);
     }
 

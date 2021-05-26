@@ -4,16 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -32,7 +31,6 @@ import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
 public class ProfileActivity extends AppCompatActivity {
     //add Firebase Database stuff
-    private static final String TAG = "ProfileActivity";
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -40,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String userID;
     private ImageView userPic;
     private ListView mListView;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
         myRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -63,11 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
                 }
             }
@@ -90,8 +88,11 @@ public class ProfileActivity extends AppCompatActivity {
         btncalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("CurrentUserId", userID);
+                editor.apply();
+
                 startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
-                Toast.makeText(ProfileActivity.this, "Calendar view", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -141,10 +142,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             //display all the information
-            /*Log.d(TAG, "showData: name: " + uInfo.getName());
-            Log.d(TAG, "showData: email: " + uInfo.getEmail());
-            Log.d(TAG, "showData: position: " + uInfo.getPosition());*/
-
             ArrayList<String> array  = new ArrayList<>();
             array.add(uInfo.getName());
             array.add(uInfo.getEmail());

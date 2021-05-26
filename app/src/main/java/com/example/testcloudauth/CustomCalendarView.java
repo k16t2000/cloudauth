@@ -3,6 +3,8 @@ package com.example.testcloudauth;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,12 +29,12 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class CustomCalendarView extends LinearLayout {
-    private final String TAG = "CustomCalendarView";
-
     ImageButton NextButton,PreviousButton, ibSetWorkHors;
     Button btnSaveWorkHours;
     TextView CurrentDate, tvWorkHours;
     GridView gridView;
+    String userId;
+    SharedPreferences preferences;
 
 
     private static final int MAX_CALENDAR_DAYS = 42;
@@ -44,7 +46,7 @@ public class CustomCalendarView extends LinearLayout {
     CalendarAdapter calendarAdapter;
     AlertDialog alertDialogAddWorkTime;
     List<Date> dates = new ArrayList<>();
-    List<Events> workingHoursList = new ArrayList<>();
+    List<WorkingHoursList> workingHoursList = new ArrayList<>();
 
     public CustomCalendarView(Context context) { super(context); }
 
@@ -110,9 +112,14 @@ public class CustomCalendarView extends LinearLayout {
                 btnSaveWorkHours.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SaveWorkHours(workDate, tvWorkHours.getText().toString());
-                        SetUpCalendar();
-                        alertDialogAddWorkTime.dismiss();
+                        String workingDuration = tvWorkHours.getText().toString();
+                        if (!workingDuration.equals("00:00")) {
+                            SaveWorkHours(userId, workDate, workingDuration);
+                            SetUpCalendar();
+                            alertDialogAddWorkTime.dismiss();
+                        } else {
+                            Toast.makeText(context, getResources().getString(R.string.work_duration_empty), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -134,6 +141,8 @@ public class CustomCalendarView extends LinearLayout {
         PreviousButton = view.findViewById(R.id.previousBtn);
         CurrentDate = view.findViewById(R.id.current_Date);
         gridView = view.findViewById(R.id.gridView);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        userId = preferences.getString("CurrentUserId", "");
     }
 
     private void SetUpCalendar() {
@@ -157,8 +166,7 @@ public class CustomCalendarView extends LinearLayout {
         gridView.setAdapter(calendarAdapter);
     }
 
-    private void SaveWorkHours(String workDate, String workDuration) {
-        Log.d(TAG, "SaveWorkHours: date: " + workDate + "\t duration: " + workDuration);
-        Toast.makeText(context, "Work hours saved", Toast.LENGTH_SHORT).show();
+    private void SaveWorkHours(String userId, String workDate, String workDuration) {
+        Toast.makeText(context, getResources().getString(R.string.work_hours_saved), Toast.LENGTH_SHORT).show();
     }
 }

@@ -3,9 +3,7 @@ package com.example.testcloudauth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class regpage extends AppCompatActivity {
-    private static final String TAG = "RegPageActivity";
     private FirebaseAuth mAuth;
 
     @Override
@@ -57,14 +54,12 @@ public class regpage extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
 
                     Toast.makeText(regpage.this, "Authentication success."+ user.getEmail(), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
                     Toast.makeText(regpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }

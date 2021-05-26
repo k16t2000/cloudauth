@@ -27,6 +27,22 @@
     <string name="zero">0</string>
     <string name="working_hours">Working hours:</string>
     <string name="imageDesc">User profile picture</string>
+    <string name="work_duration_empty">Work duration can\'t be empty</string>
+    <string name="work_hours_saved">Work hours saved</string>
+    <string name="login_or_password_empty">Login or password is empty</string>
+    <string name="login_successful">Login successful, please fill all fields</string>
+    <string name="incorrect_username_or_password">Incorrect username or password!</string>
+    <string name="registration_offer">Don\'t have account yet. Would you like register?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="chose_yes">You chose \"yes\", yay! :D</string>
+    <string name="chose_no">You chose \"no\" :(</string>
+    <string name="filled_field">Field needs to be filled!</string>
+    <string name="valid_email">You need to enter a valid email</string>
+    <string name="email_sent">Email was sent to the address you provided.</string>
+    <string name="email_sending_error">Error sending email</string>
+    <string name="attention">Attention!</string>
+    <string name="registration_error">Registration error</string>
     <array name="position">
         <item>Administrative</item>
         <item>Worker</item>

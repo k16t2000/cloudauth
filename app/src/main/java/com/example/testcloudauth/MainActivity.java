@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     //private FirebaseAuth.AuthStateListener mAuthListener;
     boolean isEmailValid;
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 String pass = mPassword.getText().toString();
 
                 if (email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.login_or_password_empty), Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()){
-                                        Toast.makeText(MainActivity.this, "Login successful, please fill all fields", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.login_successful), Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(getApplicationContext(), secpage.class));
                                     } else {
                                         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
@@ -94,31 +92,31 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            Toast.makeText(MainActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, getResources().getString(R.string.incorrect_username_or_password), Toast.LENGTH_SHORT).show();
                             // New user creating alert window
-                            builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            builder.setMessage(getResources().getString(R.string.registration_offer)).setCancelable(false)
+                                .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         startActivity(new Intent(getApplicationContext(), regpage.class));
-                                        Toast.makeText(getApplicationContext(),"You chose \"yes\", yay! :D", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.chose_yes), Toast.LENGTH_SHORT).show();
                                     }
                                 })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
-                                        Toast.makeText(getApplicationContext(),"You chose \"no\" :(", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.chose_no), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
                                 AlertDialog alert = builder.create();
-                                alert.setTitle("Attention!");
+                                alert.setTitle(getResources().getString(R.string.attention));
                                 alert.show();
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, getResources().getString(R.string.registration_error), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -130,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = mEmail.getText().toString();
                 if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Field needs to be filled!");
+                    mEmail.setError(getResources().getString(R.string.filled_field));
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    mEmail.setError("You need to enter a valid email.");
+                    mEmail.setError(getResources().getString(R.string.valid_email));
                     isEmailValid = false;
                 } else {
                     isEmailValid = true;
@@ -141,11 +139,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Log.w(TAG, "Email successfully sent.");
-                                Snackbar.make(linearLayout, "Email was sent to the address you provided.", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(linearLayout, getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT).show();
                             } else {
-                                Log.w(TAG, "Error occurred when sending email", task.getException());
-                                Snackbar.make(linearLayout, "Error sending email", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(linearLayout, getResources().getString(R.string.email_sending_error), Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });
