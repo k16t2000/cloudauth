@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +27,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class CustomCalendarView extends LinearLayout {
+    private final String TAG = "CustomCalendarView";
+
     ImageButton NextButton,PreviousButton, ibSetWorkHors;
     Button btnSaveWorkHours;
     TextView CurrentDate, tvWorkHours;
@@ -35,12 +38,13 @@ public class CustomCalendarView extends LinearLayout {
     private static final int MAX_CALENDAR_DAYS = 42;
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     Context context;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy",Locale.ENGLISH);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+    SimpleDateFormat workDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     CalendarAdapter calendarAdapter;
     AlertDialog alertDialogAddWorkTime;
     List<Date> dates = new ArrayList<>();
-    List<Events> eventsList = new ArrayList<>();
+    List<Events> workingHoursList = new ArrayList<>();
 
     public CustomCalendarView(Context context) { super(context); }
 
@@ -65,6 +69,7 @@ public class CustomCalendarView extends LinearLayout {
             }
         });
 
+        // action that will occur when you click on a date in the calendar
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -75,6 +80,7 @@ public class CustomCalendarView extends LinearLayout {
                 ibSetWorkHors = addView.findViewById(R.id.ib_set_work_time);
                 btnSaveWorkHours = addView.findViewById(R.id.btn_save_work_hours);
 
+                // calling TimePickerDialog when clicking on the clock image
                 ibSetWorkHors.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -98,10 +104,13 @@ public class CustomCalendarView extends LinearLayout {
                     }
                 });
 
+                final String workDate = workDateFormat.format(dates.get(position));
+
+                // save the running time and update the calendar after clicking the save button
                 btnSaveWorkHours.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SaveWorkHours();
+                        SaveWorkHours(workDate, tvWorkHours.getText().toString());
                         SetUpCalendar();
                         alertDialogAddWorkTime.dismiss();
                     }
@@ -144,11 +153,12 @@ public class CustomCalendarView extends LinearLayout {
             monthCalendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        calendarAdapter = new CalendarAdapter(context, dates, calendar, eventsList);
+        calendarAdapter = new CalendarAdapter(context, dates, calendar, workingHoursList);
         gridView.setAdapter(calendarAdapter);
     }
 
-    private void SaveWorkHours() {
+    private void SaveWorkHours(String workDate, String workDuration) {
+        Log.d(TAG, "SaveWorkHours: date: " + workDate + "\t duration: " + workDuration);
         Toast.makeText(context, "Work hours saved", Toast.LENGTH_SHORT).show();
     }
 }
