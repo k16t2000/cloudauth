@@ -43,6 +43,7 @@
     <string name="email_sending_error">Error sending email</string>
     <string name="attention">Attention!</string>
     <string name="registration_error">Registration error</string>
+    <string name="currentuserid">CurrentUserId</string>
     <array name="position">
         <item>Administrative</item>
         <item>Worker</item>

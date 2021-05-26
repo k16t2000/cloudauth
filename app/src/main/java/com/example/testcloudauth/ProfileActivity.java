@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("CurrentUserId", userID);
+                editor.putString(getResources().getString(R.string.currentuserid), userID);
                 editor.apply();
 
                 startActivity(new Intent(getApplicationContext(), CalendarActivity.class));

@@ -142,7 +142,7 @@ public class CustomCalendarView extends LinearLayout {
         CurrentDate = view.findViewById(R.id.current_Date);
         gridView = view.findViewById(R.id.gridView);
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        userId = preferences.getString("CurrentUserId", "");
+        userId = preferences.getString(getResources().getString(R.string.currentuserid), "");
     }
 
     private void SetUpCalendar() {
