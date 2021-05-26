@@ -3,6 +3,8 @@ package com.example.testcloudauth;
 public class WorkingHoursList {
     private String userId, date, duration;
 
+    public WorkingHoursList() {}
+
     public WorkingHoursList(String userId, String date, String duration) {
         this.userId = userId;
         this.date = date;

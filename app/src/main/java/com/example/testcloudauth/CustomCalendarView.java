@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class CustomCalendarView extends LinearLayout {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private String userId;
+    private DatabaseReference workHoursDBRef;
 
 
     private static final int MAX_CALENDAR_DAYS = 42;
@@ -145,6 +148,7 @@ public class CustomCalendarView extends LinearLayout {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userId = user != null ? user.getUid() : null;
+        workHoursDBRef = FirebaseDatabase.getInstance().getReference().child("WorkingHoursList");
     }
 
     private void SetUpCalendar() {
@@ -169,8 +173,9 @@ public class CustomCalendarView extends LinearLayout {
     }
 
     private void SaveWorkHours(String userId, String workDate, String workDuration) {
-
-
+        WorkingHoursList workingHoursList = new WorkingHoursList(userId, workDate, workDuration);
+//        workHoursDBRef.child(userId + "_" + workDate).setValue(workingHoursList);
+        System.out.println(workingHoursList.getUserId() + " \t " + workingHoursList.getDate() + " \t " + workingHoursList.getDuration());
         Toast.makeText(context, getResources().getString(R.string.work_hours_saved), Toast.LENGTH_SHORT).show();
     }
 }
