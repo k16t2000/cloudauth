@@ -67,11 +67,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
                 }
             }
@@ -95,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
-                Toast.makeText(ProfileActivity.this, "Calendar view", Toast.LENGTH_SHORT).show();
+                toastMessage("Calendar view");
             }
         });
 
@@ -105,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //mAuth.signOut();
                 getInstance().signOut();
-                Toast.makeText(ProfileActivity.this, "Signing Out...", Toast.LENGTH_SHORT).show();
+                toastMessage("Signing out...");
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }
@@ -124,7 +122,6 @@ public class ProfileActivity extends AppCompatActivity {
             if (!bool){
                 bool = true;
                 uInfo.setImageurl(ds.child(userID).getValue(Users.class).getImageurl());
-                String url = uInfo.getImageurl();
 
                 // Create new thread to fetch photo url and then update UI
                 new Thread(new Runnable() {
@@ -181,6 +178,6 @@ public class ProfileActivity extends AppCompatActivity {
      * @param message
      */
     private void toastMessage(String message){
-        Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

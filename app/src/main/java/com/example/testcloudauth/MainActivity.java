@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 final String pass = mPassword.getText().toString();
 
                 if (email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Login or password is empty!", Toast.LENGTH_SHORT).show();
+                    toastMessage("Login or password is empty!");
                 } else {
                     mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()){
-                                        Toast.makeText(MainActivity.this, "Login successful, please fill all fields!", Toast.LENGTH_SHORT).show();
+                                        toastMessage("Login successful, please fill all fields!");
                                         startActivity(new Intent(getApplicationContext(), secpage.class));
                                     } else {
                                         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
@@ -92,19 +92,19 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            Toast.makeText(MainActivity.this, "Incorrect username or password!", Toast.LENGTH_SHORT).show();
+                            toastMessage("incorrect username or password!");
                             // New user creating alert window
                             builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         startActivity(new Intent(getApplicationContext(), regpage.class));
-                                        Toast.makeText(getApplicationContext(),"You chose \"yes\", yay! :D", Toast.LENGTH_SHORT).show();
+                                        toastMessage("You chose \"yes\", yay! :D");
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
-                                        Toast.makeText(getApplicationContext(),"You chose \"no\" :(", Toast.LENGTH_SHORT).show();
+                                        toastMessage("You chose \"no\" :(");
                                     }
                                 });
 
@@ -150,5 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
