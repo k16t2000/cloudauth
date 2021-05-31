@@ -1,7 +1,6 @@
 package com.example.testcloudauth;
 
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -11,8 +10,8 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,11 +27,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class CustomCalendarView extends LinearLayout {
     private ImageButton NextButton,PreviousButton, ibSetWorkHors;
-    private Button btnSaveWorkHours;
+    private Button btnSaveWorkHours, btnSaveNumberpicker;
     private TextView CurrentDate, tvWorkHours;
     private GridView gridView;
     private FirebaseAuth mAuth;
@@ -48,7 +46,7 @@ public class CustomCalendarView extends LinearLayout {
     SimpleDateFormat workDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     CalendarAdapter calendarAdapter;
-    AlertDialog alertDialogAddWorkTime;
+    AlertDialog alertDialogAddWorkTime, alertDialogNumberpicker;
     List<Date> dates = new ArrayList<>();
     List<WorkingHoursList> workingHoursList = new ArrayList<>();
 
@@ -78,7 +76,7 @@ public class CustomCalendarView extends LinearLayout {
         // action that will occur when you click on a date in the calendar
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setCancelable(true);
                 final View addView = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_new_work_time_layout, null, false);
@@ -90,23 +88,24 @@ public class CustomCalendarView extends LinearLayout {
                 ibSetWorkHors.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Calendar calendar = Calendar.getInstance();
-                        int defaultHours = calendar.get(Calendar.HOUR_OF_DAY);
-                        int defaultMinutes = 0;
-                        TimePickerDialog timePickerDialog = new TimePickerDialog(addView.getContext(), R.style.Theme_AppCompat_Dialog,
-                                new TimePickerDialog.OnTimeSetListener() {
-                                    @Override
-                                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                        Calendar c = Calendar.getInstance();
-                                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                        c.set(Calendar.MINUTE, minute);
-                                        c.setTimeZone(TimeZone.getDefault());
-                                        SimpleDateFormat hformate = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-                                        String workDuration  = hformate.format(c.getTime());
-                                        tvWorkHours.setText(workDuration);
-                                    }
-                                }, defaultHours, defaultMinutes, true);
-                        timePickerDialog.show();
+                        AlertDialog.Builder npBuilder = new AlertDialog.Builder(context);
+                        npBuilder.setCancelable(true);
+                        final View npView = LayoutInflater.from(parent.getContext()).inflate(R.layout.numberpicker_layout, null, false);
+                        btnSaveNumberpicker = npView.findViewById(R.id.btn_save_numberpicker);
+                        final NumberPicker numberPicker = (NumberPicker) npView.findViewById(R.id.numberpicker);
+                        numberPicker.setMinValue(1);
+                        numberPicker.setMaxValue(23);
+                        btnSaveNumberpicker.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                int selectedValue = numberPicker.getValue();
+                                tvWorkHours.setText(Integer.toString(selectedValue));
+                                alertDialogNumberpicker.dismiss();
+                            }
+                        });
+                        npBuilder.setView(npView);
+                        alertDialogNumberpicker = npBuilder.create();
+                        alertDialogNumberpicker.show();
                     }
                 });
 
@@ -116,8 +115,8 @@ public class CustomCalendarView extends LinearLayout {
                 btnSaveWorkHours.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String workingDuration = tvWorkHours.getText().toString();
-                        if (!workingDuration.equals("00:00")) {
+                        int workingDuration = Integer.parseInt(tvWorkHours.getText().toString());
+                        if (workingDuration > 0) {
                             SaveWorkHours(userId, workDate, workingDuration);
                             SetUpCalendar();
                             alertDialogAddWorkTime.dismiss();
@@ -172,7 +171,7 @@ public class CustomCalendarView extends LinearLayout {
         gridView.setAdapter(calendarAdapter);
     }
 
-    private void SaveWorkHours(String userId, String workDate, String workDuration) {
+    private void SaveWorkHours(String userId, String workDate, int workDuration) {
         WorkingHoursList workingHoursList = new WorkingHoursList(userId, workDate, workDuration);
 //        workHoursDBRef.child(userId + "_" + workDate).setValue(workingHoursList);
         System.out.println(workingHoursList.getUserId() + " \t " + workingHoursList.getDate() + " \t " + workingHoursList.getDuration());

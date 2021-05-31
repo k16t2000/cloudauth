@@ -105,6 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
         Boolean bool = false;
         for (DataSnapshot ds : dataSnapshot.getChildren()){
             final Users uInfo=new Users();
+//            System.out.println(ds.getKey().equals("Users"));
             uInfo.setName(ds.child(userID).getValue(Users.class).getName());
             uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
             uInfo.setPosition(ds.child(userID).getValue(Users.class).getPosition());

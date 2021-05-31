@@ -1,11 +1,12 @@
 package com.example.testcloudauth;
 
 public class WorkingHoursList {
-    private String userId, date, duration;
+    private String userId, date;
+    private int duration;
 
     public WorkingHoursList() {}
 
-    public WorkingHoursList(String userId, String date, String duration) {
+    public WorkingHoursList(String userId, String date, int duration) {
         this.userId = userId;
         this.date = date;
         this.duration = duration;
@@ -27,11 +28,11 @@ public class WorkingHoursList {
         this.date = date;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 }
