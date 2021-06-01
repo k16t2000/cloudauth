@@ -36,9 +36,9 @@ public class regpage extends AppCompatActivity {
             }
         });
 
-        Button registerButton=findViewById(R.id.register_btn);
-        final EditText username=findViewById(R.id.UserName);
-        final EditText password=findViewById(R.id.password);
+        Button registerButton = findViewById(R.id.register_btn);
+        final EditText username = findViewById(R.id.UserName);
+        final EditText password = findViewById(R.id.password);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,14 +57,14 @@ public class regpage extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success");
+                    //Log.d(TAG, "createUserWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
 
                     Toast.makeText(regpage.this, "Authentication success."+ user.getEmail(), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                    //Log.w(TAG, "createUserWithEmail:failure", task.getException());
                     Toast.makeText(regpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }

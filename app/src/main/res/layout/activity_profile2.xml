@@ -24,7 +24,6 @@
             android:contentDescription="@string/imageDesc"
             android:foreground="@drawable/ic_edit_48"
             android:foregroundGravity="bottom|right"
-            android:onClick="imageChange"
             tools:srcCompat="@tools:sample/avatars" />
 
     <ListView
