@@ -154,8 +154,9 @@ public class CustomCalendarView extends LinearLayout {
 
     private void SaveWorkHours(String userId, String workDate, int workDuration) {
         WorkingHoursList workingHoursList = new WorkingHoursList(userId, workDate, workDuration);
-//        workHoursDBRef.child(userId + "_" + workDate).setValue(workingHoursList);
-        System.out.println(workingHoursList.getUserId() + " \t " + workingHoursList.getDate() + " \t " + workingHoursList.getDuration());
+        String workHoursKey = userId + "_" + workDate;
+        System.out.println(workHoursKey);
+        workHoursDBRef.child(workHoursKey).setValue(workingHoursList);
         Toast.makeText(context, getResources().getString(R.string.work_hours_saved), Toast.LENGTH_SHORT).show();
     }
 }
