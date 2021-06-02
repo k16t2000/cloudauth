@@ -103,45 +103,41 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void showData(DataSnapshot dataSnapshot) {
         Boolean bool = false;
-        for (DataSnapshot ds : dataSnapshot.getChildren()){
-            final Users uInfo=new Users();
-//            System.out.println(ds.getKey().equals("Users"));
-            uInfo.setName(ds.child(userID).getValue(Users.class).getName());
-            uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
-            uInfo.setPosition(ds.child(userID).getValue(Users.class).getPosition());
+        DataSnapshot ds = dataSnapshot.child("Users");
+        final Users uInfo = new Users();
+        uInfo.setName(ds.child(userID).getValue(Users.class).getName());
+        uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
+        uInfo.setPosition(ds.child(userID).getValue(Users.class).getPosition());
+        if (!bool){
+            bool = true;
+            uInfo.setImageurl(ds.child(userID).getValue(Users.class).getImageurl());
+            String url = uInfo.getImageurl();
 
-            // Run this only once to get image url
-            if (!bool){
-                bool = true;
-                uInfo.setImageurl(ds.child(userID).getValue(Users.class).getImageurl());
-                String url = uInfo.getImageurl();
-
-                // Create new thread to fetch photo url and then update UI
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            URL url = new URL(uInfo.getImageurl());
-                            final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                            userPic.post(new Runnable() {
-                                public void run() {
-                                    userPic.setImageBitmap(bmp);
-                                }
-                            });
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+            // Create new thread to fetch photo url and then update UI
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        URL url = new URL(uInfo.getImageurl());
+                        final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        userPic.post(new Runnable() {
+                            public void run() {
+                                userPic.setImageBitmap(bmp);
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                }).start();
-            }
-
-            //display all the information
-            ArrayList<String> array  = new ArrayList<>();
-            array.add(uInfo.getName());
-            array.add(uInfo.getEmail());
-            array.add(uInfo.getPosition());
-            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
-            mListView.setAdapter(adapter);
+                }
+            }).start();
         }
+
+        //display all the information
+        ArrayList<String> array  = new ArrayList<>();
+        array.add(uInfo.getName());
+        array.add(uInfo.getEmail());
+        array.add(uInfo.getPosition());
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
+        mListView.setAdapter(adapter);
     }
 
     @Override
