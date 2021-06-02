@@ -72,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                showData(dataSnapshot);
+                showData(dataSnapshot.child("Users"));
             }
 
             @Override
@@ -102,15 +102,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        Boolean bool = false;
-        DataSnapshot ds = dataSnapshot.child("Users");
+        boolean bool = false;
         final Users uInfo = new Users();
-        uInfo.setName(ds.child(userID).getValue(Users.class).getName());
-        uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
-        uInfo.setPosition(ds.child(userID).getValue(Users.class).getPosition());
+        uInfo.setName(dataSnapshot.child(userID).getValue(Users.class).getName());
+        uInfo.setEmail(dataSnapshot.child(userID).getValue(Users.class).getEmail());
+        uInfo.setPosition(dataSnapshot.child(userID).getValue(Users.class).getPosition());
         if (!bool){
             bool = true;
-            uInfo.setImageurl(ds.child(userID).getValue(Users.class).getImageurl());
+            uInfo.setImageurl(dataSnapshot.child(userID).getValue(Users.class).getImageurl());
             String url = uInfo.getImageurl();
 
             // Create new thread to fetch photo url and then update UI
