@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                showData(dataSnapshot);
+                showData(dataSnapshot.child("Users"));
             }
 
             @Override
@@ -126,43 +126,41 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void showData(DataSnapshot dataSnapshot) {
         boolean bool = false;
-        for (DataSnapshot ds : dataSnapshot.getChildren()){
-            final Users uInfo=new Users();
-            uInfo.setName(ds.child(userID).getValue(Users.class).getName());
-            uInfo.setEmail(ds.child(userID).getValue(Users.class).getEmail());
-            uInfo.setPosition(ds.child(userID).getValue(Users.class).getPosition());
+        final Users uInfo = new Users();
+        uInfo.setName(dataSnapshot.child(userID).getValue(Users.class).getName());
+        uInfo.setEmail(dataSnapshot.child(userID).getValue(Users.class).getEmail());
+        uInfo.setPosition(dataSnapshot.child(userID).getValue(Users.class).getPosition());
 
-            // Run this only once to get image url
-            if (!bool){
-                bool = true;
-                uInfo.setImageurl(ds.child(userID).getValue(Users.class).getImageurl());
+        // Run this only once to get image url
+        if (!bool){
+            bool = true;
+            uInfo.setImageurl(dataSnapshot.child(userID).getValue(Users.class).getImageurl());
 
-                // Create new thread to fetch photo BASE64 string and then update UI
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            // fetch user pic base64 string in the background, then update the UI
-                            userPic.post(new Runnable() {
-                                public void run() {
-                                    byte[] imageBytes = Base64.decode(uInfo.getImageurl(), Base64.DEFAULT);
-                                    final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                                    userPic.setImageBitmap(decodedImage);
-                                }
-                            });
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+            // Create new thread to fetch photo BASE64 string and then update UI
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        // fetch user pic base64 string in the background, then update the UI
+                        userPic.post(new Runnable() {
+                            public void run() {
+                                byte[] imageBytes = Base64.decode(uInfo.getImageurl(), Base64.DEFAULT);
+                                final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                                userPic.setImageBitmap(decodedImage);
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                }).start();
-            }
-
-            ArrayList<String> array  = new ArrayList<>();
-            array.add(uInfo.getName());
-            array.add(uInfo.getEmail());
-            array.add(uInfo.getPosition());
-            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
-            mListView.setAdapter(adapter);
+                }
+            }).start();
         }
+
+        ArrayList<String> array  = new ArrayList<>();
+        array.add(uInfo.getName());
+        array.add(uInfo.getEmail());
+        array.add(uInfo.getPosition());
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
+        mListView.setAdapter(adapter);
     }
 
     private void openFileChooser() {
