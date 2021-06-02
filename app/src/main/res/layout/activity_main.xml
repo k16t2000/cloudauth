@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="#EEE"
-                android:text="@string/sign_in_btntext"
+                android:text="@string/signInBtntext"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Button
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="#EEE"
-                android:text="@string/forgot_passw"
+                android:text="@string/forgotPassw"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
         </LinearLayout>
     </ScrollView>

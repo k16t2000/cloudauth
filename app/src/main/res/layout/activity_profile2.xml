@@ -50,7 +50,7 @@
         android:id="@+id/email_sign_out_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sign_out_btntext"
+        android:text="@string/signOutBtntext"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
     </LinearLayout>
 </RelativeLayout>

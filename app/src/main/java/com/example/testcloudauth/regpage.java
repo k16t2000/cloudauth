@@ -3,13 +3,12 @@ package com.example.testcloudauth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.example.testcloudauth.Utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -18,10 +17,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Objects;
-
 public class regpage extends AppCompatActivity {
     private FirebaseAuth mAuth;
+
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +41,13 @@ public class regpage extends AppCompatActivity {
         final EditText username = findViewById(R.id.UserName);
         final EditText password = findViewById(R.id.password);
 
+        utils = new Utils();
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
-                    Toast.makeText(regpage.this, "Login or password is empty", Toast.LENGTH_SHORT).show();
+                    utils.toastMessage(getApplicationContext(), getString(R.string.loginOrPasswordEmpty));
                 } else {
                     createNew(username.getText().toString(), password.getText().toString());
                 }
@@ -61,19 +62,18 @@ public class regpage extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
                     FirebaseUser user = mAuth.getCurrentUser();
-
-                    Toast.makeText(regpage.this, "Authentication success."+ user.getEmail(), Toast.LENGTH_SHORT).show();
+                    utils.toastMessage(getApplicationContext(), getString(R.string.authenticationSuccess)+ user.getEmail());
                     finish();
                 } else {
                     // If sign in fails, display a message to the user.
                     try {
                         throw task.getException();
                     } catch(FirebaseAuthWeakPasswordException e) {
-                        Toast.makeText(regpage.this, "Password must be at least 6 digits.", Toast.LENGTH_SHORT).show();
+                        utils.toastMessage(getApplicationContext(), getString(R.string.passwordNumberSymbols));
                     } catch(FirebaseAuthUserCollisionException e) {
-                        Toast.makeText(regpage.this, "Such User already exists!", Toast.LENGTH_SHORT).show();
+                        utils.toastMessage(getApplicationContext(), getString(R.string.userAlreadyExists));
                     } catch(Exception e) {
-                        Toast.makeText(regpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        utils.toastMessage(getApplicationContext(), getString(R.string.authenticationFailed));
                     }
                 }
             }

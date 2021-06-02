@@ -1,10 +1,7 @@
 package com.example.testcloudauth;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,28 +16,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.example.testcloudauth.Utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 public class secpage extends AppCompatActivity {
@@ -59,10 +45,14 @@ public class secpage extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST=8;
     private String imageString;
 
+    private Utils utils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secpage);
+
+        utils = new Utils();
 
         etName = (EditText) findViewById(R.id.edName);
         spinnerPosition = (Spinner) findViewById(R.id.spinnerPosition);
@@ -73,7 +63,7 @@ public class secpage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent();
-                i.setType("image/*"); //"video/*"   //"file/*"
+                i.setType(getString(R.string.imageFolder)); //"video/*"   //"file/*"
                 i.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(i, PICK_IMAGE_REQUEST);
             }
@@ -106,7 +96,7 @@ public class secpage extends AppCompatActivity {
             public void onClick(View view) {
                 //mAuth.signOut();
                 FirebaseAuth.getInstance().signOut();
-                Toast.makeText(secpage.this, "Signing Out...", Toast.LENGTH_SHORT).show();
+                utils.toastMessage(getApplicationContext(), getString(R.string.signingOut));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }
@@ -130,7 +120,6 @@ public class secpage extends AppCompatActivity {
                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
                 imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
-                //Log.d(TAG, "BASE64: " + imageString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -144,23 +133,23 @@ public class secpage extends AppCompatActivity {
         final String email = tvshow.getText().toString();
 
         if (name.isEmpty() || imageString == null) {
-            Toast.makeText(secpage.this, "Image or name is empty", Toast.LENGTH_SHORT).show();
+            utils.toastMessage(getApplicationContext(), getString(R.string.imageOrNameIsEmpty));
         } else {
             if (!position.equals("")) {
                 Users users = new Users(name, position, email, imageString);
                 userDBRef.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).setValue(users);
-                Toast.makeText(secpage.this, "Data inserted!", Toast.LENGTH_SHORT).show();
+                utils.toastMessage(getApplicationContext(), getString(R.string.dataInserted));
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 finish();
             } else {
-                Toast.makeText(secpage.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
+                utils.toastMessage(getApplicationContext(), getString(R.string.fillAllFields));
             }
         }
     }
 
     public String getFileName(Uri uri){
         String result = null;
-        if (uri.getScheme().equals("content")){
+        if (uri.getScheme().equals(getString(R.string.content))){
             Cursor cursor=getContentResolver().query(uri,null,null,null,null);
             try {
                 if (cursor != null && cursor.moveToFirst()){

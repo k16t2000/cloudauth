@@ -1,21 +1,43 @@
 <resources>
-    <string name="app_name">testcloudauth</string>
-    <string name="app_name_installed_name">Work Hours</string>
-    <string name="enterEmail">Enter email</string>
-    <string name="enterPassword">Enter password</string>
-    <string name="sign_in_btntext">Sign in</string>
-    <string name="sign_out_btntext">Sign out</string>
-    <string name="forgot_passw">Forgot password?</string>
-    <string name="edit_name">Edit first and last name</string>
+    <string name="app_name">Work Hours</string>
+
     <string name="profile">Your profile</string>
     <string name="pictureuser">Picture of user</string>
-    <string name="enterUserName">Enter user name</string>
-    <string name="reg_btn">Register</string>
     <string name="registration">Registration</string>
-    <string name="btnclose">Close</string>
-    <string name="Enter_profile">Enter all fields</string>
+    <string name="enterProfile">Enter all fields</string>
+    <string name="imageDesc">User profile picture</string>
+    <string name="currentuserid">CurrentUserId</string>
+    <string name="calendarView">Calendar view</string>
+
+    <array name="position">
+        <item>Administrative</item>
+        <item>Worker</item>
+    </array>
+
+
+    <!-- ================================ -->
+    <!-- Buttons -->
+    <!-- ================================ -->
+    <string name="signInBtntext">Sign in</string>
+    <string name="signOutBtntext">Sign out</string>
+    <string name="forgotPassw">Forgot password?</string>
+    <string name="regBtn">Register</string>
+    <string name="btnClose">Close</string>
+
+
+    <!-- ================================ -->
+    <!-- Placeholders -->
+    <!-- ================================ -->
+    <string name="enterEmail">Enter email</string>
+    <string name="enterPassword">Enter password</string>
+    <string name="editName">Edit first and last name</string>
+    <string name="enterUserName">Enter user name</string>
+
+
+    <!-- ================================ -->
+    <!-- Calendar -->
+    <!-- ================================ -->
     <string name="Calendar">Calendar</string>
-    <string name="default_time">0</string>
     <string name="save">Save</string>
     <string name="mon">Mon</string>
     <string name="tue">Tue</string>
@@ -24,31 +46,61 @@
     <string name="fri">Fri</string>
     <string name="sat">Sat</string>
     <string name="sun">Sun</string>
-    <string name="currentdate">CurrentDate</string>
+    <string name="currentDate">CurrentDate</string>
+    <string name="numberOfWorkingHours">Working hours</string>
+    <string name="workDurationEmpty">Work duration can\'t be empty</string>
+    <string name="workHoursSaved">Work hours saved</string>
+
+
+    <!-- ================================ -->
+    <!-- General -->
+    <!-- ================================ -->
     <string name="zero">0</string>
-    <string name="working_hours">Working hours:</string>
-    <string name="number_of_working_hours">Working hours</string>
-    <string name="imageDesc">User profile picture</string>
     <string name="insertData">Insert data</string>
-    <string name="work_duration_empty">Work duration can\'t be empty</string>
-    <string name="work_hours_saved">Work hours saved</string>
-    <string name="login_or_password_empty">Login or password is empty</string>
-    <string name="login_successful">Login successful, please fill all fields</string>
-    <string name="incorrect_username_or_password">Incorrect username or password!</string>
-    <string name="registration_offer">Don\'t have account yet. Would you like register?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="chose_yes">You chose \"yes\", yay! :D</string>
-    <string name="chose_no">You chose \"no\" :(</string>
-    <string name="filled_field">Field needs to be filled!</string>
-    <string name="valid_email">You need to enter a valid email</string>
-    <string name="email_sent">Email was sent to the address you provided.</string>
-    <string name="email_sending_error">Error sending email</string>
+    <string name="content">content</string>
+
+
+    <!-- ================================ -->
+    <!-- validator -->
+    <!-- ================================ -->
+
+    <!-- errors -->
+    <string name="loginOrPasswordEmpty">Login or password is empty</string>
+    <string name="incorrectUsernameOrPassword">Incorrect username or password!</string>
+    <string name="registrationError">Registration error</string>
+    <string name="filledField">Field needs to be filled!</string>
+    <string name="validEmail">You need to enter a valid email</string>
+    <string name="emailSendingError">Error sending email</string>
+    <string name="authenticationFailed">"Authentication failed."</string>
+    <string name="imageOrNameIsEmpty">Image or name is empty</string>
+    <string name="passwordNumberSymbols">Password must be at least 6 symbols.</string>
+    <string name="userAlreadyExists">Such User already exists!</string>
+    <string name="fillAllFields">You didn\'t fill in all the fields.</string>
+
+
+    <!-- notifications -->
+    <string name="loginSuccessful">Login successful, please fill all fields</string>
+    <string name="registrationOffer">Don\'t have account yet. Would you like register?</string>
+    <string name="emailSent">Email was sent to the address you provided.</string>
+    <string name="successfullySignedIn">Successfully signed in with: </string>
+    <string name="successfullySignedOut">Successfully signed out.</string>
+    <string name="signingOut">Signing out…</string>
     <string name="attention">Attention!</string>
-    <string name="registration_error">Registration error</string>
-    <string name="currentuserid">CurrentUserId</string>
-    <array name="position">
-        <item>Administrative</item>
-        <item>Worker</item>
-    </array>
+    <string name="authenticationSuccess">"Authentication success. "</string>
+    <string name="dataInserted">Data inserted!</string>
+
+
+    <!-- ================================ -->
+    <!-- DB -->
+    <!-- ================================ -->
+    <string name="tableUsers">Users</string>
+    <string name="tableWorkingHours">WorkingHoursList</string>
+
+    <string name="imageUrl">imageurl</string>
+    <string name="email">email</string>
+
+    <string name="imageFolder">image/*</string>
+
 </resources>

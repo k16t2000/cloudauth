@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import com.example.testcloudauth.Utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference userDBRef;
 
     AlertDialog.Builder builder;
+
+    private Utils utils;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
         user = mAuth.getCurrentUser(); //get user
 
+        utils = new Utils();
+
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 final String pass = mPassword.getText().toString();
 
                 if (email.isEmpty() || pass.isEmpty()) {
-                    toastMessage(getResources().getString(R.string.login_or_password_empty));
+                    utils.toastMessage(getApplicationContext(), getString(R.string.loginOrPasswordEmpty));
                 } else {
                     mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -73,15 +79,17 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()){
                             // Check if email exists in database
                             DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                            Query query = rootRef.child("Users").orderByChild("email").equalTo(email);
+                            Query query = rootRef.child(getString(R.string.tableUsers)).orderByChild(getString(R.string.email)).equalTo(email);
                             query.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()){
-                                        toastMessage(getResources().getString(R.string.login_successful));
+                                        utils.toastMessage(getApplicationContext(), getString(R.string.loginSuccessful));
                                         startActivity(new Intent(getApplicationContext(), secpage.class));
+                                        finish();
                                     } else {
                                         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                        finish();
                                     }
                                 }
 
@@ -91,32 +99,30 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            toastMessage(getResources().getString(R.string.incorrect_username_or_password));
+                            utils.toastMessage(getApplicationContext(), getString(R.string.incorrectUsernameOrPassword));
                             // New user creating alert window
-                            builder.setMessage(getResources().getString(R.string.registration_offer))
+                            builder.setMessage(getString(R.string.registrationOffer))
                                     .setCancelable(false)
-                                    .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             startActivity(new Intent(getApplicationContext(), regpage.class));
-//                                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.chose_yes), Toast.LENGTH_SHORT).show();
                                         }
                                     })
-                                    .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                                    .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();
-//                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.chose_no), Toast.LENGTH_SHORT).show();
                                         }
                                     });
 
                                 AlertDialog alert = builder.create();
-                                alert.setTitle(getResources().getString(R.string.attention));
+                                alert.setTitle(getString(R.string.attention));
                                 alert.show();
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-//                            Toast.makeText(MainActivity.this, getResources().getString(R.string.registration_error), Toast.LENGTH_SHORT).show();
+//                            utils.toastMessage(getApplicationContext(), getString(R.string.registrationError));
                         }
                     });
                 }
@@ -128,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = mEmail.getText().toString();
                 if (TextUtils.isEmpty(email)) {
-                    mEmail.setError(getResources().getString(R.string.filled_field));
+                    mEmail.setError(getString(R.string.filledField));
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    mEmail.setError(getResources().getString(R.string.valid_email));
+                    mEmail.setError(getString(R.string.validEmail));
                     isEmailValid = false;
                 } else {
                     isEmailValid = true;
@@ -139,18 +145,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Snackbar.make(linearLayout, getResources().getString(R.string.email_sent), Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(linearLayout, getString(R.string.emailSent), Snackbar.LENGTH_SHORT).show();
                             } else {
-                                Snackbar.make(linearLayout, getResources().getString(R.string.email_sending_error), Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(linearLayout, getString(R.string.emailSendingError), Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
             }
         });
-    }
-
-    private void toastMessage(String message){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

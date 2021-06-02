@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/btnclose"
+                android:text="@string/btnClose"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 />
 
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/reg_btn"
+                android:text="@string/regBtn"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
         </ScrollView>

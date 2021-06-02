@@ -12,10 +12,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.example.testcloudauth.Utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +39,8 @@ public class CustomCalendarView extends LinearLayout {
     private FirebaseUser user;
     private String userId;
     private DatabaseReference workHoursDBRef;
+
+    private Utils utils;
 
 
     private static final int MAX_CALENDAR_DAYS = 42;
@@ -102,7 +104,7 @@ public class CustomCalendarView extends LinearLayout {
                             SetUpCalendar();
                             alertDialogAddWorkTime.dismiss();
                         } else {
-                            Toast.makeText(context, getResources().getString(R.string.work_duration_empty), Toast.LENGTH_SHORT).show();
+                            utils.toastMessage(context, getResources().getString(R.string.workDurationEmpty));
                         }
                     }
                 });
@@ -128,7 +130,9 @@ public class CustomCalendarView extends LinearLayout {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         userId = user != null ? user.getUid() : null;
-        workHoursDBRef = FirebaseDatabase.getInstance().getReference().child("WorkingHoursList");
+        workHoursDBRef = FirebaseDatabase.getInstance().getReference().child(getResources().getString(R.string.tableWorkingHours));
+
+        utils = new Utils();
     }
 
     private void SetUpCalendar() {
@@ -157,6 +161,6 @@ public class CustomCalendarView extends LinearLayout {
         String workHoursKey = userId + "_" + workDate;
         System.out.println(workHoursKey);
         workHoursDBRef.child(workHoursKey).setValue(workingHoursList);
-        Toast.makeText(context, getResources().getString(R.string.work_hours_saved), Toast.LENGTH_SHORT).show();
+        utils.toastMessage(context, getResources().getString(R.string.workHoursSaved));
     }
 }

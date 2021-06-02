@@ -1,27 +1,22 @@
 package com.example.testcloudauth;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.loader.content.CursorLoader;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.testcloudauth.Utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,15 +27,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import static com.google.firebase.auth.FirebaseAuth.getInstance;
 
 public class ProfileActivity extends AppCompatActivity {
-    //add Firebase Database stuff
-    private FirebaseDatabase mFirebaseDatabase;
     private static final int PICK_IMAGE_REQUEST = 1;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -48,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String userID;
     private ImageView userPic;
     private ListView mListView;
+
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +52,13 @@ public class ProfileActivity extends AppCompatActivity {
         mListView = (ListView)findViewById(R.id.listview);
         userPic = (ImageView)findViewById(R.id.userImage);
         mAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        //add Firebase Database stuff
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         userID = user.getUid();
+        utils = new Utils();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -72,10 +67,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (user != null) {
                     // User is signed in
-                    toastMessage("Successfully signed in with: " + user.getEmail());
+//                    utils.toastMessage(getApplicationContext(), getString(R.string.successfullySignedIn) + user.getEmail());
                 } else {
                     // User is signed out
-                    toastMessage("Successfully signed out.");
+                    utils.toastMessage(getApplicationContext(), getString(R.string.successfullySignedOut));
                 }
             }
         };
@@ -85,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                showData(dataSnapshot.child("Users"));
+                showData(dataSnapshot.child(getString(R.string.tableUsers)));
             }
 
             @Override
@@ -107,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
-                toastMessage("Calendar view");
+//                utils.toastMessage(getApplicationContext(), getString(R.string.calendarView));
             }
         });
 
@@ -117,7 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //mAuth.signOut();
                 getInstance().signOut();
-                toastMessage("Signing out...");
+                utils.toastMessage(getApplicationContext(), getString(R.string.signingOut));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }
@@ -165,7 +160,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void openFileChooser() {
         Intent intent = new Intent();
-        intent.setType("image/*");
+        intent.setType(getString(R.string.imageFolder));
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
@@ -189,9 +184,7 @@ public class ProfileActivity extends AppCompatActivity {
                 String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
                 // send base64 string to database
-                myRef.child("Users").child(userID).child("imageurl").setValue(imageString);
-
-                //Log.d(TAG, "BASE64: " + imageString);
+                myRef.child(getString(R.string.tableUsers)).child(userID).child(getString(R.string.imageUrl)).setValue(imageString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -210,13 +203,5 @@ public class ProfileActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
-
-    /**
-     * customizable toast
-     * @param message
-     */
-    private void toastMessage(String message){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

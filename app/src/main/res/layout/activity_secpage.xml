@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/Enter_profile"
+                android:text="@string/enterProfile"
                 android:gravity="center_horizontal"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
@@ -85,7 +85,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="10dp"
                         android:ems="10"
-                        android:hint="@string/edit_name"
+                        android:hint="@string/editName"
                         android:inputType="textPersonName" />
                 </TableRow>
 
@@ -116,7 +116,7 @@
                 android:id="@+id/email_sign_out_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_out_btntext"
+                android:text="@string/signOutBtntext"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         </LinearLayout>
