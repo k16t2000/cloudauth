@@ -135,11 +135,12 @@ public class ProfileActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        // fetch user pic base64 string in the background, then update the UI
+                        byte[] imageBytes = Base64.decode(uInfo.getImageurl(), Base64.DEFAULT);
+                        final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+
+                        // update UI using non-blocking method
                         userPic.post(new Runnable() {
                             public void run() {
-                                byte[] imageBytes = Base64.decode(uInfo.getImageurl(), Base64.DEFAULT);
-                                final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
                                 userPic.setImageBitmap(decodedImage);
                             }
                         });

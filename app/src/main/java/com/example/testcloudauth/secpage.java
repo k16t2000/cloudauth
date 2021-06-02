@@ -107,8 +107,15 @@ public class secpage extends AppCompatActivity {
             Uri imageUri = data.getData();
             try {
                 // get image bitmap
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                profileImage.setImageBitmap(bitmap);
+                final Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+
+                // update UI using non-blocking method
+                profileImage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        profileImage.setImageBitmap(bitmap);
+                    }
+                });
 
                 // get base64 string
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
