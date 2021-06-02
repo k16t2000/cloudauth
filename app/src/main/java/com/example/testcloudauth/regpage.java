@@ -3,6 +3,7 @@ package com.example.testcloudauth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 public class regpage extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -33,9 +38,10 @@ public class regpage extends AppCompatActivity {
             }
         });
 
-        Button registerButton=findViewById(R.id.register_btn);
-        final EditText username=findViewById(R.id.UserName);
-        final EditText password=findViewById(R.id.password);
+        Button registerButton = findViewById(R.id.register_btn);
+        final EditText username = findViewById(R.id.UserName);
+        final EditText password = findViewById(R.id.password);
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,7 +66,15 @@ public class regpage extends AppCompatActivity {
                     finish();
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(regpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    try {
+                        throw task.getException();
+                    } catch(FirebaseAuthWeakPasswordException e) {
+                        Toast.makeText(regpage.this, "Password must be at least 6 digits.", Toast.LENGTH_SHORT).show();
+                    } catch(FirebaseAuthUserCollisionException e) {
+                        Toast.makeText(regpage.this, "Such User already exists!", Toast.LENGTH_SHORT).show();
+                    } catch(Exception e) {
+                        Toast.makeText(regpage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

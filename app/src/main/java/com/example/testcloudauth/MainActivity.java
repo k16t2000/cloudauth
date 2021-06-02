@@ -32,12 +32,11 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    //private FirebaseAuth.AuthStateListener mAuthListener;
     boolean isEmailValid;
     private LinearLayout linearLayout;
     private EditText mEmail, mPassword;
-    private Button btnSignIn,btnForgot;
-    private FirebaseUser user;
+    private Button btnSignIn, btnForgot;
+    FirebaseUser user;
 
     DatabaseReference userDBRef;
 
@@ -57,16 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        user = mAuth.getCurrentUser();//get user
+        user = mAuth.getCurrentUser(); //get user
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String email = mEmail.getText().toString();
-                String pass = mPassword.getText().toString();
+                final String pass = mPassword.getText().toString();
 
                 if (email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.login_or_password_empty), Toast.LENGTH_SHORT).show();
+                    toastMessage(getResources().getString(R.string.login_or_password_empty));
                 } else {
                     mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()){
-                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.login_successful), Toast.LENGTH_SHORT).show();
+                                        toastMessage(getResources().getString(R.string.login_successful));
                                         startActivity(new Intent(getApplicationContext(), secpage.class));
                                     } else {
                                         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
@@ -92,21 +91,22 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            Toast.makeText(MainActivity.this, getResources().getString(R.string.incorrect_username_or_password), Toast.LENGTH_SHORT).show();
+                            toastMessage(getResources().getString(R.string.incorrect_username_or_password));
                             // New user creating alert window
-                            builder.setMessage(getResources().getString(R.string.registration_offer)).setCancelable(false)
-                                .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        startActivity(new Intent(getApplicationContext(), regpage.class));
+                            builder.setMessage(getResources().getString(R.string.registration_offer))
+                                    .setCancelable(false)
+                                    .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            startActivity(new Intent(getApplicationContext(), regpage.class));
 //                                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.chose_yes), Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
+                                        }
+                                    })
+                                    .setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
 //                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.chose_no), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                        }
+                                    });
 
                                 AlertDialog alert = builder.create();
                                 alert.setTitle(getResources().getString(R.string.attention));
@@ -148,5 +148,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void toastMessage(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

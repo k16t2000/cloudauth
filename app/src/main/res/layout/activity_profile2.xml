@@ -15,14 +15,16 @@
         android:layout_marginBottom="70dp"
         android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/userImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="10dp"
-        android:contentDescription="@string/imageDesc"
-        android:layout_gravity="center"
-        tools:srcCompat="@tools:sample/avatars" />
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="@string/imageDesc"
+            android:foreground="@drawable/ic_edit_48"
+            android:foregroundGravity="bottom|right"
+            tools:srcCompat="@tools:sample/avatars" />
 
     <ListView
         android:layout_width="match_parent"

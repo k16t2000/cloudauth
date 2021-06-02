@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,11 +27,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 public class secpage extends AppCompatActivity {
     private FirebaseUser user;
@@ -43,8 +57,7 @@ public class secpage extends AppCompatActivity {
     DatabaseReference userDBRef;
 
     private static final int PICK_IMAGE_REQUEST=8;
-    private Uri imageuri;
-    private String imageurl, imagename;
+    private String imageString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +67,6 @@ public class secpage extends AppCompatActivity {
         etName = (EditText) findViewById(R.id.edName);
         spinnerPosition = (Spinner) findViewById(R.id.spinnerPosition);
         btnInsertData = (Button) findViewById(R.id.btnInsertData);
-
         profileImage = (ImageView) findViewById(R.id.imageUser);
         //loadPicture=(Button) findViewById(R.id.btn_load_pic);
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -103,11 +115,25 @@ public class secpage extends AppCompatActivity {
 
     //new now pic
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data!= null){
-            imageuri = data.getData();
-            imagename = getFileName(imageuri);
-            profileImage.setImageURI(imageuri);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+            // get image uri from local storage
+            Uri imageUri = data.getData();
+            try {
+                // get image bitmap
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                profileImage.setImageBitmap(bitmap);
+
+                // get base64 string
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+                //Log.d(TAG, "BASE64: " + imageString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -116,52 +142,19 @@ public class secpage extends AppCompatActivity {
         final String name = etName.getText().toString();
         final String position = spinnerPosition.getSelectedItem().toString();
         final String email = tvshow.getText().toString();
-        //pic
-        StorageReference abc = storageReference.child("images/img1.jpg");
 
-        if (name.isEmpty() || imageuri == null || imageuri.equals(Uri.EMPTY)) {
+        if (name.isEmpty() || imageString == null) {
             Toast.makeText(secpage.this, "Image or name is empty", Toast.LENGTH_SHORT).show();
         } else {
-            abc.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        //Toast.makeText(secpage.this, "Image uploaded", Toast.LENGTH_SHORT).show();
-                        //new now
-                        final StorageReference ref = storageReference.child("images").child("users").child(imagename);
-                        ref.putFile(imageuri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            imageurl = uri.toString();
-
-                                            if (!name.equals("") && !position.equals("")) {
-                                                Users users = new Users(name, position, email, imageurl);
-                                                //userDBRef.push().setValue(users);
-                                                userDBRef.child(mAuth.getCurrentUser().getUid()).setValue(users);
-                                                Toast.makeText(secpage.this, "Data inserted!", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                                                finish();
-                                            } else {
-                                                Toast.makeText(secpage.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(secpage.this, "Not uploaded", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            public void onFailure(@NonNull Exception exception) {
-                                Toast.makeText(secpage.this, exception.toString(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            });
+            if (!position.equals("")) {
+                Users users = new Users(name, position, email, imageString);
+                userDBRef.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).setValue(users);
+                Toast.makeText(secpage.this, "Data inserted!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                finish();
+            } else {
+                Toast.makeText(secpage.this, "You didn't fill in all the fields.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -8,7 +8,7 @@
     <string name="forgot_passw">Forgot password?</string>
     <string name="edit_name">Edit first and last name</string>
     <string name="profile">Your profile</string>
-    <string name="pictureuser">picture of user</string>
+    <string name="pictureuser">Picture of user</string>
     <string name="enterUserName">Enter user name</string>
     <string name="reg_btn">Register</string>
     <string name="registration">Registration</string>
@@ -29,6 +29,7 @@
     <string name="working_hours">Working hours:</string>
     <string name="number_of_working_hours">Working hours</string>
     <string name="imageDesc">User profile picture</string>
+    <string name="insertData">Insert data</string>
     <string name="work_duration_empty">Work duration can\'t be empty</string>
     <string name="work_hours_saved">Work hours saved</string>
     <string name="login_or_password_empty">Login or password is empty</string>
