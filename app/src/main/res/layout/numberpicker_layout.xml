@@ -10,6 +10,19 @@ android:background="@android:color/holo_blue_light">
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_work_hours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/number_of_working_hours"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
     <NumberPicker
         android:id="@+id/numberpicker"
         android:layout_gravity="center"
@@ -25,7 +38,7 @@ android:background="@android:color/holo_blue_light">
     android:layout_gravity="center"
     android:layout_margin="10dp"
     android:background="@android:color/white"
-    android:text="@string/ok"
+    android:text="@string/save"
     android:textColor="@android:color/black"
     android:textStyle="bold" />
 

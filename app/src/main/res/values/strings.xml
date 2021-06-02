@@ -17,7 +17,6 @@
     <string name="Calendar">Calendar</string>
     <string name="default_time">0</string>
     <string name="save">Save</string>
-    <string name="ok">Ok</string>
     <string name="mon">Mon</string>
     <string name="tue">Tue</string>
     <string name="wed">Wed</string>
@@ -28,6 +27,7 @@
     <string name="currentdate">CurrentDate</string>
     <string name="zero">0</string>
     <string name="working_hours">Working hours:</string>
+    <string name="number_of_working_hours">Working hours</string>
     <string name="imageDesc">User profile picture</string>
     <string name="work_duration_empty">Work duration can\'t be empty</string>
     <string name="work_hours_saved">Work hours saved</string>
