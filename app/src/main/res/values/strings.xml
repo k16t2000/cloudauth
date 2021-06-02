@@ -7,7 +7,7 @@
     <string name="forgot_passw">Forgot password?</string>
     <string name="edit_name">Edit first and last name</string>
     <string name="profile">Your profile</string>
-    <string name="pictureuser">picture of user</string>
+    <string name="pictureuser">Picture of user</string>
     <string name="enterUserName">Enter user name</string>
     <string name="reg_btn">Register</string>
     <string name="registration">Registration</string>
@@ -28,6 +28,7 @@
     <string name="zero">0</string>
     <string name="working_hours">Working hours:</string>
     <string name="imageDesc">User profile picture</string>
+    <string name="insertData">Insert data</string>
     <array name="position">
         <item>Administrative</item>
         <item>Worker</item>

@@ -22,13 +22,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/email_sign_out_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sign_out_btntext"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
             <TextView
                 android:id="@+id/profile"
                 android:layout_width="match_parent"
@@ -72,7 +65,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:layout_marginTop="5dp"
+                        android:baselineAlignBottom="false"
                         android:contentDescription="@string/pictureuser"
+                        android:foreground="@drawable/ic_edit_48"
+                        android:foregroundGravity="bottom|right"
                         android:src="@drawable/ic_baseline_person_pin_24" />
 
                 </TableRow>
@@ -113,8 +109,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Insert data"
-                android:textAllCaps="false"/>
+                android:text="@string/insertData"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/email_sign_out_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_out_btntext"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         </LinearLayout>
     </ScrollView>

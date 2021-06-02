@@ -194,7 +194,6 @@ public class ProfileActivity extends AppCompatActivity {
                 myRef.child("Users").child(userID).child("imageurl").setValue(imageString);
 
                 //Log.d(TAG, "BASE64: " + imageString);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
