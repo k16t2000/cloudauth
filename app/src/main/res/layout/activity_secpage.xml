@@ -4,122 +4,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainsec"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#F6F5F5"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:layout_margin="20dp"
     tools:context=".secpage">
 
-    <ScrollView
-        android:id="@+id/login_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <TextView
+            android:id="@+id/profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/profile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/enterProfile"
-                android:gravity="center_horizontal"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:layout_marginTop="16dp"
+            android:text="@string/enterProfile"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
 
-            <TextView
-                android:id="@+id/tvshowemail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="Welcome abc@gmail.com"
-                android:gravity="center_horizontal"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textSize="15sp"
-                android:id="@+id/tvuserid"
-                tools:text="ID here..."/>
+        <TextView
+            android:id="@+id/tvshowemail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Welcome abc@gmail.com"
+            android:gravity="center_horizontal"
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="15sp"
+            android:id="@+id/tvuserid"
+            tools:text="ID here..."/>
 
-            <TableLayout
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
+                android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center">
+                <ImageView
+                    android:id="@+id/imageUser"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="5dp"
+                    android:baselineAlignBottom="false"
+                    android:contentDescription="@string/pictureuser"
+                    android:foreground="@drawable/ic_edit_48"
+                    android:foregroundGravity="bottom|right"
+                    android:src="@drawable/ic_baseline_person_pin_24" />
 
-                    <ImageView
-                        android:id="@+id/imageUser"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:layout_marginTop="5dp"
-                        android:baselineAlignBottom="false"
-                        android:contentDescription="@string/pictureuser"
-                        android:foreground="@drawable/ic_edit_48"
-                        android:foregroundGravity="bottom|right"
-                        android:src="@drawable/ic_baseline_person_pin_24" />
+            </TableRow>
 
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center">
-
-                    <EditText
-                        android:id="@+id/edName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:ems="10"
-                        android:hint="@string/editName"
-                        android:inputType="textPersonName" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center">
-
-                    <Spinner
-                        android:id="@+id/spinnerPosition"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:entries="@array/position" />
-                </TableRow>
-            </TableLayout>
-
-            <Button
-                android:id="@+id/btnInsertData"
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/insertData"
-                android:textAllCaps="false" />
+                android:layout_height="match_parent"
+                android:gravity="center">
 
-            <Button
-                android:id="@+id/email_sign_out_btn"
+                <EditText
+                    android:id="@+id/edName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:ems="10"
+                    android:hint="@string/editName"
+                    android:inputType="textPersonName" />
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/signOutBtntext"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:layout_height="match_parent"
+                android:gravity="center">
 
-        </LinearLayout>
-    </ScrollView>
+                <Spinner
+                    android:id="@+id/spinnerPosition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/position" />
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+id/btnInsertData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/insertData"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/email_sign_out_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/signOutBtntext"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 </LinearLayout>

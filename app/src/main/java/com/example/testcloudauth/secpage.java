@@ -38,7 +38,6 @@ public class secpage extends AppCompatActivity {
     private EditText etName;
     private Spinner spinnerPosition;
     private ImageView profileImage;
-    private StorageReference storageReference;
 
     DatabaseReference userDBRef;
 
@@ -58,7 +57,6 @@ public class secpage extends AppCompatActivity {
         spinnerPosition = (Spinner) findViewById(R.id.spinnerPosition);
         btnInsertData = (Button) findViewById(R.id.btnInsertData);
         profileImage = (ImageView) findViewById(R.id.imageUser);
-        //loadPicture=(Button) findViewById(R.id.btn_load_pic);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,8 +78,6 @@ public class secpage extends AppCompatActivity {
         btnSignOut = (Button) findViewById(R.id.email_sign_out_btn);
 
         userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
-        storageReference = FirebaseStorage.getInstance().getReference();//for pics
 
         btnInsertData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +143,7 @@ public class secpage extends AppCompatActivity {
         }
     }
 
-    public String getFileName(Uri uri){
+    /*public String getFileName(Uri uri){
         String result = null;
         if (uri.getScheme().equals(getString(R.string.content))){
             Cursor cursor=getContentResolver().query(uri,null,null,null,null);
@@ -168,5 +164,5 @@ public class secpage extends AppCompatActivity {
             }
         }
         return result;
-    }
+    }*/
 }
