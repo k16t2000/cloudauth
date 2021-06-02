@@ -34,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
-    //private FirebaseAuth.AuthStateListener mAuthListener;
     boolean isEmailValid;
     private LinearLayout linearLayout;
     private EditText mEmail, mPassword;
-    private Button btnSignIn,btnForgot;
+    private Button btnSignIn, btnForgot;
+    FirebaseUser user;
 
     DatabaseReference userDBRef;
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userDBRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        //FirebaseUser user = mAuth.getCurrentUser();//get user
+        user = mAuth.getCurrentUser(); //get user
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,25 +92,26 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            toastMessage("incorrect username or password!");
+                            toastMessage("Incorrect username or password!");
                             // New user creating alert window
-                            builder.setMessage("Don't have account yet. Would you like register?").setCancelable(false)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        startActivity(new Intent(getApplicationContext(), regpage.class));
-                                        toastMessage("You chose \"yes\", yay! :D");
-                                    }
-                                })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                        toastMessage("You chose \"no\" :(");
-                                    }
-                                });
+                            builder.setMessage("Don't have account yet. Would you like register?")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            startActivity(new Intent(getApplicationContext(), regpage.class));
+                                            toastMessage("You chose \"yes\", yay! :D");
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            toastMessage("You chose \"no\" :(");
+                                        }
+                                    });
 
-                                AlertDialog alert = builder.create();
-                                alert.setTitle("Attention!");
-                                alert.show();
+                                    AlertDialog alert = builder.create();
+                                    alert.setTitle("Attention!");
+                                    alert.show();
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
