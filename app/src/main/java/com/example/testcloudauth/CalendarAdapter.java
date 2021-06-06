@@ -10,9 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CalendarAdapter extends ArrayAdapter {
     List<Date> dates;
@@ -39,6 +42,7 @@ public class CalendarAdapter extends ArrayAdapter {
         int displayYear = dateCalendar.get(Calendar.YEAR);
         int currentMonth = currentDate.get(Calendar.MONTH) + 1;
         int currentYear = currentDate.get(Calendar.YEAR);
+        int workingHoursPerDay = 0;
 
         View view = convertView;
         if (view == null) {
@@ -51,8 +55,31 @@ public class CalendarAdapter extends ArrayAdapter {
             view.setBackgroundColor(getContext().getResources().getColor(R.color.white));
         }
 
+        Calendar tmpCalendar = Calendar.getInstance(Locale.ENGLISH);
+        SimpleDateFormat tmpDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        for (WorkingHoursList tmpList : workingHoursLists) {
+            try {
+                    tmpCalendar.setTime(tmpDate.parse(tmpList.getDate()));
+                    if (tmpCalendar.get(Calendar.DAY_OF_MONTH) == DayNo &&
+                            (tmpCalendar.get(Calendar.MONTH) + 1) == currentMonth &&
+                            tmpCalendar.get(Calendar.YEAR) == currentYear
+                    ) {
+                        workingHoursPerDay = tmpList.getDuration();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+        }
+
         TextView DayNumber = view.findViewById(R.id.calendar_day);
+        TextView WorkingHoursPerDay = view.findViewById(R.id.tvWorkHourPerDate);
         DayNumber.setText(String.valueOf(DayNo));
+
+        if (workingHoursPerDay > 0) {
+            WorkingHoursPerDay.setText(String.valueOf(workingHoursPerDay));
+        } else {
+            WorkingHoursPerDay.setText("");
+        }
 
         return view;
     }

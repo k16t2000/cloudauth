@@ -164,7 +164,11 @@ public class CustomCalendarView extends LinearLayout {
         workHoursDBRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                CountWorkingHours(snapshot.child(userId));
+                GetWorkingHoursFromDb(snapshot.child(userId));
+                CalculateTotalWorkingHours(workingHoursList);
+
+                calendarAdapter = new CalendarAdapter(context, dates, calendar, workingHoursList);
+                gridView.setAdapter(calendarAdapter);
             }
 
             @Override
@@ -172,45 +176,48 @@ public class CustomCalendarView extends LinearLayout {
 
             }
         });
-
-        calendarAdapter = new CalendarAdapter(context, dates, calendar, workingHoursList);
-        gridView.setAdapter(calendarAdapter);
     }
 
     private void SaveWorkHours(String userId, String workDate, int workDuration) {
-        WorkingHoursList workingHoursList = new WorkingHoursList(userId, workDate, workDuration);
-        String workHoursKey = userId + "_" + workDate;
-        System.out.println(workHoursKey);
-        workHoursDBRef.child(userId).child(workDate).setValue(workingHoursList);
+        WorkingHoursList tmpWorkingHoursList = new WorkingHoursList(userId, workDate, workDuration);
+        workHoursDBRef.child(userId).child(workDate).setValue(tmpWorkingHoursList);
         utils.toastMessage(context, getResources().getString(R.string.workHoursSaved));
     }
 
+
     // count and set total working hours per month
-    private void CountWorkingHours(DataSnapshot snapshot) {
-        if (snapshot != null) {
+    private void CalculateTotalWorkingHours(List<WorkingHoursList> userWorkingHours) {
+        int totalWorkingHours = 0;
+        if (userWorkingHours.size() > 0) {
             Date tmpCurrDate;
             Calendar calCurrDate = Calendar.getInstance(Locale.ENGLISH);
             Calendar calCurrMonth = Calendar.getInstance(Locale.ENGLISH);
-            int totalWorkingHours = 0;
-            for (DataSnapshot ds : snapshot.getChildren()) {
+            for (WorkingHoursList workingHoursList : userWorkingHours) {
                 try {
-                    tmpCurrDate = workDateFormat.parse(ds.getKey());
+                    tmpCurrDate = workDateFormat.parse(workingHoursList.getDate());
                     calCurrDate.setTime(tmpCurrDate);
                     calCurrMonth.setTime(currDate);
                     if (calCurrDate.get(Calendar.MONTH) == calCurrMonth.get(Calendar.MONTH) &&
                             calCurrDate.get(Calendar.YEAR) == calCurrMonth.get(Calendar.YEAR)
                     ) {
-                        for (DataSnapshot userData : ds.getChildren()) {
-                            if (userData.getKey().equals("duration")) {
-                                totalWorkingHours += Integer.parseInt(String.valueOf(userData.getValue()));
-                            }
-                        }
+                        totalWorkingHours += workingHoursList.getDuration();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
-            TotalWorkingHours.setText(String.valueOf(totalWorkingHours));
+        }
+        TotalWorkingHours.setText(String.valueOf(totalWorkingHours));
+    }
+
+
+    // save all working hours by user id in list
+    private void GetWorkingHoursFromDb(DataSnapshot dataSnapshot) {
+        if (dataSnapshot != null) {
+            workingHoursList.clear();
+            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                workingHoursList.add(ds.getValue(WorkingHoursList.class));
+            }
         }
     }
 }
