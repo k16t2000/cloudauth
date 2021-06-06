@@ -13,14 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.testcloudauth.Utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +36,7 @@ import java.util.Locale;
 public class CustomCalendarView extends LinearLayout {
     private ImageButton NextButton,PreviousButton;
     private Button btnSaveWorkHours;
-    private TextView CurrentDate;
+    private TextView CurrentDate, TotalWorkingHours;
     private GridView gridView;
 
 
@@ -41,6 +46,7 @@ public class CustomCalendarView extends LinearLayout {
     private DatabaseReference workHoursDBRef;
 
     private Utils utils;
+    private Date currDate;
 
 
     private static final int MAX_CALENDAR_DAYS = 42;
@@ -126,6 +132,7 @@ public class CustomCalendarView extends LinearLayout {
         NextButton = view.findViewById(R.id.nextBtn);
         PreviousButton = view.findViewById(R.id.previousBtn);
         CurrentDate = view.findViewById(R.id.current_Date);
+        TotalWorkingHours = view.findViewById(R.id.tvTotalWorkingHours);
         gridView = view.findViewById(R.id.gridView);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -136,7 +143,8 @@ public class CustomCalendarView extends LinearLayout {
     }
 
     private void SetUpCalendar() {
-        String currentDate = dateFormat.format(calendar.getTime());
+        currDate = calendar.getTime();
+        String currentDate = dateFormat.format(currDate);
         CurrentDate.setText(currentDate);
         dates.clear();
         Calendar monthCalendar = (Calendar) calendar.clone();
@@ -152,6 +160,19 @@ public class CustomCalendarView extends LinearLayout {
             monthCalendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
+        // show total working hours
+        workHoursDBRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                CountWorkingHours(snapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         calendarAdapter = new CalendarAdapter(context, dates, calendar, workingHoursList);
         gridView.setAdapter(calendarAdapter);
     }
@@ -160,7 +181,35 @@ public class CustomCalendarView extends LinearLayout {
         WorkingHoursList workingHoursList = new WorkingHoursList(userId, workDate, workDuration);
         String workHoursKey = userId + "_" + workDate;
         System.out.println(workHoursKey);
-        workHoursDBRef.child(workHoursKey).setValue(workingHoursList);
+        workHoursDBRef.child(userId).child(workDate).setValue(workingHoursList);
         utils.toastMessage(context, getResources().getString(R.string.workHoursSaved));
+    }
+
+    // count and set total working hours per month
+    private void CountWorkingHours(DataSnapshot snapshot) {
+        DataSnapshot dataSnapshotUser = snapshot.child(userId);
+        Date tmpCurrDate;
+        Calendar calCurrDate = Calendar.getInstance(Locale.ENGLISH);
+        Calendar calCurrMonth = Calendar.getInstance(Locale.ENGLISH);
+        int totalWorkingHours = 0;
+        for (DataSnapshot ds : dataSnapshotUser.getChildren()) {
+            try {
+                tmpCurrDate = workDateFormat.parse(ds.getKey());
+                calCurrDate.setTime(tmpCurrDate);
+                calCurrMonth.setTime(currDate);
+                if (calCurrDate.get(Calendar.MONTH) == calCurrMonth.get(Calendar.MONTH) &&
+                        calCurrDate.get(Calendar.YEAR) == calCurrMonth.get(Calendar.YEAR)
+                ) {
+                    for (DataSnapshot userData : ds.getChildren()) {
+                        if (userData.getKey().equals("duration")) {
+                            totalWorkingHours += Integer.parseInt(String.valueOf(userData.getValue()));
+                        }
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        TotalWorkingHours.setText(String.valueOf(totalWorkingHours));
     }
 }

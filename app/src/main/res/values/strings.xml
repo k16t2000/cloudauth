@@ -48,6 +48,7 @@
     <string name="sun">Sun</string>
     <string name="currentDate">CurrentDate</string>
     <string name="numberOfWorkingHours">Working hours</string>
+    <string name="totalOfWorkingHours">Total working hours:</string>
     <string name="workDurationEmpty">Work duration can\'t be empty</string>
     <string name="workHoursSaved">Work hours saved</string>
 
