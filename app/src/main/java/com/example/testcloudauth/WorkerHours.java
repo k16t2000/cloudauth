@@ -48,8 +48,6 @@ public class WorkerHours extends AppCompatActivity {
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                int count = 0;
-
                 // get workers
                 for (final DataSnapshot childSnapshot : snapshot.getChildren()){
                     int totalHours = 0;
@@ -89,7 +87,7 @@ public class WorkerHours extends AppCompatActivity {
                                         "-" + (month < 10 ? ("0" + month) : month) +
                                         "-" + calCurrMonth.get(Calendar.YEAR) +
                                         " — " + childChildSnapshot.child("duration").getValue() + "h";
-                                count += Integer.parseInt(childChildSnapshot.child("duration").getValue().toString());
+                                totalHours += Integer.parseInt(childChildSnapshot.child("duration").getValue().toString());
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -114,7 +112,7 @@ public class WorkerHours extends AppCompatActivity {
                     }
 
                     final TextView totalWorkingHours = new TextView(getApplicationContext());
-                    String string = "Total working hours: " + count + "hours";
+                    String string = "Total working hours: " + totalHours + "hours";
                     totalWorkingHours.setText(string);
                     RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.MATCH_PARENT,
