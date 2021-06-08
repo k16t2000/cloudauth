@@ -7,14 +7,11 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.Gravity;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,7 +27,7 @@ import java.util.Locale;
 
 public class WorkerHours extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private DatabaseReference dbRef, dbUsersRef, myRef;
+    private DatabaseReference dbRef, dbUsersRef;
     private String userID;
     private LinearLayout layout;
 
@@ -52,18 +48,19 @@ public class WorkerHours extends AppCompatActivity {
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                int count = 0;
+
                 // get workers
                 for (final DataSnapshot childSnapshot : snapshot.getChildren()){
+                    int totalHours = 0;
                     final TextView ntext = new TextView(getApplicationContext());
                     setUsername(childSnapshot, ntext);
-
-                    ntext.setPadding(10,10,10,10);
 
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.MATCH_PARENT,
                             RelativeLayout.LayoutParams.MATCH_PARENT
                     );
-                    params.setMargins(20, 15, 5, 0);
+                    params.setMargins(20, 15, 20, 0);
                     params.alignWithParent = true;
 
                     ntext.setLayoutParams(params);
@@ -92,6 +89,7 @@ public class WorkerHours extends AppCompatActivity {
                                         "-" + (month < 10 ? ("0" + month) : month) +
                                         "-" + calCurrMonth.get(Calendar.YEAR) +
                                         " — " + childChildSnapshot.child("duration").getValue() + "h";
+                                count += Integer.parseInt(childChildSnapshot.child("duration").getValue().toString());
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -100,20 +98,36 @@ public class WorkerHours extends AppCompatActivity {
                             StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
                             spannableString.setSpan(boldSpan, 0, 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                             time.setText(spannableString);
-                            time.setPadding(75, 10, 10, 10);
+                            time.setPadding(10, 10, 10, 10);
 
                             RelativeLayout.LayoutParams timeTable = new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
                                     RelativeLayout.LayoutParams.MATCH_PARENT
                             );
-                            timeTable.setMargins(0, 15, 5, 0);
+                            timeTable.setMargins(75, 15, 75, 0);
                             timeTable.alignWithParent = true;
 
                             time.setLayoutParams(timeTable);
-                            time.setGravity(Gravity.CENTER);
+                            time.setGravity(Gravity.CENTER_HORIZONTAL);
                             layout.addView(time);
                         }
                     }
+
+                    final TextView totalWorkingHours = new TextView(getApplicationContext());
+                    String string = "Total working hours: " + count + "hours";
+                    totalWorkingHours.setText(string);
+                    RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.MATCH_PARENT
+                    );
+                    params2.setMargins(200, 15, 200, 20);
+                    params2.alignWithParent = true;
+
+                    totalWorkingHours.setLayoutParams(params2);
+                    totalWorkingHours.setGravity(Gravity.CENTER);
+                    totalWorkingHours.setBackgroundColor(Color.rgb(225, 200, 200));
+                    totalWorkingHours.setTypeface(Typeface.DEFAULT_BOLD);
+                    layout.addView(totalWorkingHours);
                 }
             }
 
