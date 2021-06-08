@@ -60,10 +60,10 @@ public class WorkerHours extends AppCompatActivity {
                     ntext.setPadding(10,10,10,10);
 
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.WRAP_CONTENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.MATCH_PARENT
                     );
-                    params.setMargins(0, 15, 5, 0);
+                    params.setMargins(20, 15, 5, 0);
                     params.alignWithParent = true;
 
                     ntext.setLayoutParams(params);
@@ -103,8 +103,8 @@ public class WorkerHours extends AppCompatActivity {
                             time.setPadding(75, 10, 10, 10);
 
                             RelativeLayout.LayoutParams timeTable = new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                                    RelativeLayout.LayoutParams.MATCH_PARENT
                             );
                             timeTable.setMargins(0, 15, 5, 0);
                             timeTable.alignWithParent = true;
