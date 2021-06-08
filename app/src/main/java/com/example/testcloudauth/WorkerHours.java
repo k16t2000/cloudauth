@@ -23,9 +23,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class WorkerHours extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private DatabaseReference dbRef, myRef;
+    private DatabaseReference dbRef, dbUsersRef, myRef;
     private String userID;
     private LinearLayout layout;
 
@@ -38,6 +44,7 @@ public class WorkerHours extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference(getResources().getString(R.string.tableWorkingHours));
+        dbUsersRef = FirebaseDatabase.getInstance().getReference(getResources().getString(R.string.tableUsers));
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         userID = user.getUid();
@@ -46,9 +53,10 @@ public class WorkerHours extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 // get workers
-                for (DataSnapshot childSnapshot : snapshot.getChildren()){
-                    TextView ntext = new TextView(getApplicationContext());
-                    ntext.setText(getResources().getString(R.string.worker) + childSnapshot.getKey());
+                for (final DataSnapshot childSnapshot : snapshot.getChildren()){
+                    final TextView ntext = new TextView(getApplicationContext());
+                    setUsername(childSnapshot, ntext);
+
                     ntext.setPadding(10,10,10,10);
 
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -66,31 +74,73 @@ public class WorkerHours extends AppCompatActivity {
 
                     // get each worker hours
                     for (DataSnapshot childChildSnapshot : childSnapshot.getChildren()) {
-                        TextView time = new TextView(getApplicationContext());
-                        String string = "Date — Hours: " + childChildSnapshot.child("date").getValue() +
-                                " — " + childChildSnapshot.child("duration").getValue() + "h";
-                        SpannableString spannableString = new SpannableString(string);
-                        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-                        spannableString.setSpan(boldSpan, 0, 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        time.setText(spannableString);
-                        time.setPadding(75,10,10,10);
+                        if (childChildSnapshot.child("date").getValue() != null) {
+                            TextView time = new TextView(getApplicationContext());
+                            String string = "";
 
-                        RelativeLayout.LayoutParams timeTable = new RelativeLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                RelativeLayout.LayoutParams.WRAP_CONTENT
-                        );
-                        timeTable.setMargins(0, 15, 5, 0);
-                        timeTable.alignWithParent = true;
+                            String tmpDate = (String) childChildSnapshot.child("date").getValue();
 
-                        time.setLayoutParams(timeTable);
-                        time.setGravity(Gravity.CENTER);
-                        layout.addView(time);
+                            Date tmpCurrDate;
+                            SimpleDateFormat workDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                            Calendar calCurrMonth = Calendar.getInstance(Locale.ENGLISH);
+                            try {
+                                tmpCurrDate = workDateFormat.parse(tmpDate);
+                                calCurrMonth.setTime(tmpCurrDate);
+                                int month = calCurrMonth.get(Calendar.MONTH) + 1;
+                                int day = calCurrMonth.get(Calendar.DAY_OF_MONTH);
+                                string += (day < 10 ? ("0" + day) : day) +
+                                        "-" + (month < 10 ? ("0" + month) : month) +
+                                        "-" + calCurrMonth.get(Calendar.YEAR) +
+                                        " — " + childChildSnapshot.child("duration").getValue() + "h";
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            SpannableString spannableString = new SpannableString(string);
+                            StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+                            spannableString.setSpan(boldSpan, 0, 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            time.setText(spannableString);
+                            time.setPadding(75, 10, 10, 10);
+
+                            RelativeLayout.LayoutParams timeTable = new RelativeLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                            );
+                            timeTable.setMargins(0, 15, 5, 0);
+                            timeTable.alignWithParent = true;
+
+                            time.setLayoutParams(timeTable);
+                            time.setGravity(Gravity.CENTER);
+                            layout.addView(time);
+                        }
                     }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void setUsername(final DataSnapshot dataSnapshot, final TextView textView) {
+        dbUsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userChildSnapshot : snapshot.getChildren()){
+                    if (userChildSnapshot.getKey().equals(dataSnapshot.getKey())) {
+                        Users user = userChildSnapshot.getValue(Users.class);
+                        String username = user.getName();
+                        if (username != null && !username.isEmpty()) {
+                            textView.setText(getResources().getString(R.string.worker) + username);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
