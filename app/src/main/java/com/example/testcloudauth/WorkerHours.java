@@ -16,16 +16,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.List;
 
 public class WorkerHours extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference dbRef;
     private String userID;
-    private int count = 0;
     private LinearLayout layout;
 
     @Override
@@ -37,19 +33,13 @@ public class WorkerHours extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference(getResources().getString(R.string.tableWorkingHours));
-
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         userID = user.getUid();
 
-
-
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                //showWorkersData(snapshot);
-                //count = (int) snapshot.getChildrenCount();
-
                 // get workers
                 for (DataSnapshot childSnapshot : snapshot.getChildren()){
                     TextView ntext = new TextView(getApplicationContext());
@@ -95,13 +85,5 @@ public class WorkerHours extends AppCompatActivity {
 
             }
         });
-    }
-
-    protected void showWorkersData(DataSnapshot dataSnapshot){
-        /*workHoursDBRef.child(userID).child(workDate).setValue(tmpWorkingHoursList);
-        dataSnapshot.child(userID).getValue(Users.class).getName();*/
-
-        count = (int) dataSnapshot.getChildrenCount();
-
     }
 }
