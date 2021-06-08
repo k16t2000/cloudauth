@@ -24,6 +24,11 @@
     <string name="regBtn">Register</string>
     <string name="btnClose">Close</string>
 
+    <!-- ================================ -->
+    <!-- Workers hours -->
+    <!-- ================================ -->
+    <string name="worker">Worker:&#160;</string>
+
 
     <!-- ================================ -->
     <!-- Placeholders -->

@@ -1,6 +1,11 @@
 package com.example.testcloudauth;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class WorkerHours extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private DatabaseReference dbRef;
+    private DatabaseReference dbRef, myRef;
     private String userID;
     private LinearLayout layout;
 
@@ -43,7 +48,7 @@ public class WorkerHours extends AppCompatActivity {
                 // get workers
                 for (DataSnapshot childSnapshot : snapshot.getChildren()){
                     TextView ntext = new TextView(getApplicationContext());
-                    ntext.setText("Worker: " + childSnapshot.getKey());
+                    ntext.setText(getResources().getString(R.string.worker) + childSnapshot.getKey());
                     ntext.setPadding(10,10,10,10);
 
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -55,16 +60,20 @@ public class WorkerHours extends AppCompatActivity {
 
                     ntext.setLayoutParams(params);
                     ntext.setGravity(Gravity.CENTER);
+                    ntext.setBackgroundColor(Color.rgb(225, 225, 225));
+                    ntext.setTypeface(Typeface.DEFAULT_BOLD);
                     layout.addView(ntext);
 
                     // get each worker hours
                     for (DataSnapshot childChildSnapshot : childSnapshot.getChildren()) {
                         TextView time = new TextView(getApplicationContext());
-                        time.setText(
-                            "Date -- Hours: " + childChildSnapshot.child("date").getValue() +
-                            " -- " + childChildSnapshot.child("duration").getValue() + "h"
-                        );
-                        time.setPadding(50,10,10,10);
+                        String string = "Date — Hours: " + childChildSnapshot.child("date").getValue() +
+                                " — " + childChildSnapshot.child("duration").getValue() + "h";
+                        SpannableString spannableString = new SpannableString(string);
+                        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+                        spannableString.setSpan(boldSpan, 0, 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        time.setText(spannableString);
+                        time.setPadding(75,10,10,10);
 
                         RelativeLayout.LayoutParams timeTable = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT,
