@@ -39,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String userID;
     private ImageView userPic;
     private ListView mListView;
+    private Button btnWorkersHours;
 
     private Utils utils;
 
@@ -48,7 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile2);
 
         Button btnSignOut = (Button)findViewById(R.id.email_sign_out_btn);
-        Button btncalendar = (Button)findViewById(R.id.calendar);
+        Button btnCalendar = (Button)findViewById(R.id.calendar);
+        btnWorkersHours = (Button)findViewById(R.id.workers_hours);
         mListView = (ListView)findViewById(R.id.listview);
         userPic = (ImageView)findViewById(R.id.userImage);
         mAuth = FirebaseAuth.getInstance();
@@ -98,11 +100,19 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         // open calendar view
-        btncalendar.setOnClickListener(new View.OnClickListener() {
+        btnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
 //                utils.toastMessage(getApplicationContext(), getString(R.string.calendarView));
+            }
+        });
+
+        // open workers hours for administrator
+        btnWorkersHours.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), WorkerHours.class));
             }
         });
 
@@ -120,36 +130,39 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        boolean bool = false;
         final Users uInfo = new Users();
         uInfo.setName(dataSnapshot.child(userID).getValue(Users.class).getName());
         uInfo.setEmail(dataSnapshot.child(userID).getValue(Users.class).getEmail());
         uInfo.setPosition(dataSnapshot.child(userID).getValue(Users.class).getPosition());
+        // admin or worker
+        String userPosition = uInfo.getPosition();
 
-        // Run this only once to get image url
-        if (!bool){
-            bool = true;
-            uInfo.setImageurl(dataSnapshot.child(userID).getValue(Users.class).getImageurl());
-
-            // Create new thread to fetch photo BASE64 string and then update UI
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        byte[] imageBytes = Base64.decode(uInfo.getImageurl(), Base64.DEFAULT);
-                        final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-
-                        // update UI using non-blocking method
-                        userPic.post(new Runnable() {
-                            public void run() {
-                                userPic.setImageBitmap(decodedImage);
-                            }
-                        });
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }).start();
+        // if not admin user, hide workers hours button
+        if(!userPosition.equals("Administrative")){
+            btnWorkersHours.setVisibility(View.INVISIBLE);
         }
+
+        // Get image url from database
+        uInfo.setImageurl(dataSnapshot.child(userID).getValue(Users.class).getImageurl());
+
+        // Create new thread to fetch photo BASE64 string and then update UI
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    byte[] imageBytes = Base64.decode(uInfo.getImageurl(), Base64.DEFAULT);
+                    final Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+
+                    // update UI using non-blocking method
+                    userPic.post(new Runnable() {
+                        public void run() {
+                            userPic.setImageBitmap(decodedImage);
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
 
         ArrayList<String> array  = new ArrayList<>();
         array.add(uInfo.getName());

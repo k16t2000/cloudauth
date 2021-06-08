@@ -103,5 +103,6 @@
     <string name="email">email</string>
 
     <string name="imageFolder">image/*</string>
+    <string name="worker_hours">Workers hours</string>
 
 </resources>
